@@ -73,7 +73,7 @@ namespace FitLog.Implementation.Extensions
 
                         foreach (var prop in properties)
                         {
-                            expressions.Add(GetComparisonString(prop, propertyValue, comparisonType));
+                            expressions.Add(GetComparisonString($"x.{prop}", propertyValue, comparisonType));
                         }
 
                         string separator = attr is IAndAttribute ? " && " : " || ";
@@ -81,12 +81,21 @@ namespace FitLog.Implementation.Extensions
                         query = query.Where("x => " + string.Join(separator, expressions));
                     }
 
-                    if(attr is WithAnyPropertyAttribute wp)
+                    if (attr is WithAnyPropertyAttribute wp)
                     {
                         var collection = wp.Collection;
                         var property = wp.Property;
 
-                        query = query.Where("y => " + GetComparisonStringAnyProperty(collection, property, propertyValue, comparisonType));
+                        query = query.Where("y => " + GetComparisonStringAnyProperty(collection, $"x.{property}", propertyValue, comparisonType));
+                    }
+
+                    if (attr is JoinedPropertiesAttribute jpa)
+                    {
+                        var propertyConcatanationString = jpa.BuildPropertyConcatanation();
+
+                        var comparisonString = GetComparisonString(propertyConcatanationString, propertyValue, comparisonType);
+
+                        query = query.Where("x => " + comparisonString);
                     }
                 }
             }
@@ -162,17 +171,17 @@ namespace FitLog.Implementation.Extensions
             switch(comparisonType)
             {
                 case ComparisonType.Equals:
-                    return $"x.{property} == {FormatValue(value)}";
+                    return $"{property} == {FormatValue(value)}";
                 case ComparisonType.Contains:
-                    return $"x.{property}.Contains({FormatValue(value)})";
+                    return $"{property}.Contains({FormatValue(value)})";
                 case ComparisonType.LessThan:
-                    return $"x.{property} < {FormatValue(value)}";
+                    return $"{property} < {FormatValue(value)}";
                 case ComparisonType.LessThanOrEqual:
-                    return $"x.{property} <= {FormatValue(value)}";
+                    return $"{property} <= {FormatValue(value)}";
                 case ComparisonType.GreaterThan:
-                    return $"x.{property} > {FormatValue(value)}";
+                    return $"{property} > {FormatValue(value)}";
                 case ComparisonType.GreaterThanOrEqual:
-                    return $"x.{property} >= {FormatValue(value)}";
+                    return $"{property} >= {FormatValue(value)}";
                 default:
                     return $"x.{property} == {FormatValue(value)}";
             }
