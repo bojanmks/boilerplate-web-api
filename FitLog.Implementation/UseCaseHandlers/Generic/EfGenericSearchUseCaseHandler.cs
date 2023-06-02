@@ -12,9 +12,8 @@ using System.Xml.Linq;
 
 namespace FitLog.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericSearchUseCaseHandler<TUseCase, TSearch, TEntity, TOut> : UseCaseHandler<TUseCase, TSearch, object>
-        where TUseCase : UseCase<TSearch, object>
-        where TSearch : ISearchObject
+    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, ISearchObject, object>
+        where TUseCase : UseCase<ISearchObject, object>
         where TOut : IIdentifyable
         where TEntity : class
     {

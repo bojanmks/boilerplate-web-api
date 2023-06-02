@@ -40,14 +40,13 @@ namespace FitLog.Implementation.UseCases
             _provider = provider;
         }
 
-        public object Search<TUseCase, TSearch, TEntity, TOut>(TUseCase useCase)
-            where TUseCase : UseCase<TSearch, object>
-            where TSearch : ISearchObject
+        public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
+            where TUseCase : UseCase<ISearchObject, object>
             where TOut : IIdentifyable
             where TEntity : class
         {
-            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TSearch, TEntity, TOut>(_context);
-            var executor = new UseCaseExecutor<TUseCase, TSearch, object>(_provider);
+            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_context);
+            var executor = new UseCaseExecutor<TUseCase, ISearchObject, object>(_provider);
 
             return executor.Execute(useCase, handler);
         }
