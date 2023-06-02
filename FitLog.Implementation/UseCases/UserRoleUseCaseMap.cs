@@ -1,6 +1,6 @@
 ﻿using FitLog.Common.Attributes;
 using FitLog.Common.Enums;
-using FitLog.Implementation.Extensions;
+using FitLog.Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace FitLog.Implementation.UseCases
                 UserRole.Admin,
                 new List<string>
                 {
-
+                    "AddMuscleGroup", "UpdateMuscleGroup", "DeleteMuscleGroup", "FindMuscleGroup"
                 }
             },
             {
                 UserRole.Regular,
                 new List<string>
                 {
-                    "RefreshToken"
+                    "RefreshToken", "SearchMuscleGroups"
                 }
             },
             {

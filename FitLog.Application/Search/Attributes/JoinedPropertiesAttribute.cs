@@ -1,4 +1,5 @@
-﻿using FitLog.Application.Search.Enums;
+﻿using FitLog.Application.Extensions;
+using FitLog.Application.Search.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +24,7 @@ namespace FitLog.Application.Search.Attributes
 
         public string BuildPropertyConcatanation()
         {
-            string separator = " + ";
-
-            switch (_joinType)
-            {
-                case JoinType.WithSpaces:
-                    separator = " + \" \" + ";
-                    break;
-            }
+            string separator = _joinType.GetSeparator();
 
             var propertiesPreparedForExpression = _properties.Select(propertyName => $"x.{propertyName}");
 
