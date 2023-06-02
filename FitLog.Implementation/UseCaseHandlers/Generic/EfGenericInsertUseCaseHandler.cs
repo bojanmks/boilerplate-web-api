@@ -24,9 +24,11 @@ namespace FitLog.Implementation.UseCaseHandlers.Generic
 
         public override Empty Handle(TUseCase useCase)
         {
-            var mappedData = _mapper.Map<TData, TEntity>(useCase.Data);
+            var entity = Activator.CreateInstance<TEntity>();
 
-            _context.Set<TEntity>().Add(mappedData);
+            _mapper.Map(useCase.Data, entity);
+
+            _context.Set<TEntity>().Add(entity);
 
             _context.SaveChanges();
 
