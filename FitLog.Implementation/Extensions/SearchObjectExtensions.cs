@@ -48,17 +48,20 @@ namespace FitLog.Implementation.Extensions
 
         public static IQueryable<T> BuildQuery<T>(this ISearchObject search, IQueryable<T> query)
         {
-            var searchObjProperties = search.GetType().GetProperties();
+            var searchObjectProperties = search.GetType().GetProperties();
 
-            foreach (var p in searchObjProperties)
+            foreach (var propertyInfo in searchObjectProperties)
             {
-                var value = p.GetValue(search);
+                var propertyValue = propertyInfo.GetValue(search);
 
-                if(value == null) continue;
+                if(!propertyInfo.HasAttributeOfType<AllowNullAttribute>() && propertyValue is null)
+                {
+                    continue;
+                }
 
-                var attributes = p.GetCustomAttributes(true).Where(x => x is BaseSearchAttribute);
+                var searchAttributes = propertyInfo.GetAttributesOfType<BaseSearchAttribute>();
 
-                foreach (BaseSearchAttribute attr in attributes)
+                foreach (BaseSearchAttribute attr in searchAttributes)
                 {
                     var comparisonType = attr.ComparisonType;
 
@@ -70,7 +73,7 @@ namespace FitLog.Implementation.Extensions
 
                         foreach (var prop in properties)
                         {
-                            expressions.Add(GetComparisonString(prop, value, comparisonType));
+                            expressions.Add(GetComparisonString(prop, propertyValue, comparisonType));
                         }
 
                         string separator = attr is IAndAttribute ? " && " : " || ";
@@ -83,7 +86,7 @@ namespace FitLog.Implementation.Extensions
                         var collection = wp.Collection;
                         var property = wp.Property;
 
-                        query = query.Where("y => " + GetComparisonStringAnyProperty(collection, property, value, comparisonType));
+                        query = query.Where("y => " + GetComparisonStringAnyProperty(collection, property, propertyValue, comparisonType));
                     }
                 }
             }
@@ -160,22 +163,16 @@ namespace FitLog.Implementation.Extensions
             {
                 case ComparisonType.Equals:
                     return $"x.{property} == {FormatValue(value)}";
-                    break;
                 case ComparisonType.Contains:
                     return $"x.{property}.Contains({FormatValue(value)})";
-                    break;
                 case ComparisonType.LessThan:
                     return $"x.{property} < {FormatValue(value)}";
-                    break;
                 case ComparisonType.LessThanOrEqual:
                     return $"x.{property} <= {FormatValue(value)}";
-                    break;
                 case ComparisonType.GreaterThan:
                     return $"x.{property} > {FormatValue(value)}";
-                    break;
                 case ComparisonType.GreaterThanOrEqual:
                     return $"x.{property} >= {FormatValue(value)}";
-                    break;
                 default:
                     return $"x.{property} == {FormatValue(value)}";
             }
@@ -188,6 +185,8 @@ namespace FitLog.Implementation.Extensions
 
         private static object FormatValue(object value)
         {
+            if (value is null) return "null";
+
             if (value is string) return $"\"{value}\"";
 
             return value;
