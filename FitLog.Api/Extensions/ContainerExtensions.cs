@@ -145,7 +145,15 @@ namespace FitLog.Api.Extensions
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidateLifetime = false
+                    LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+                    {
+                        if (expires.HasValue)
+                        {
+                            return DateTime.UtcNow < expires.Value;
+                        }
+
+                        return false;
+                    }
                 };
             });
 
