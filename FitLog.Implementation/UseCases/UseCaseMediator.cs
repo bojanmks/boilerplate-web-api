@@ -80,7 +80,7 @@ namespace FitLog.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public object Execute<TUseCase, TData, TOut>(TUseCase useCase)
+        public TOut Execute<TUseCase, TData, TOut>(TUseCase useCase)
             where TUseCase : UseCase<TData, TOut>
         {
             var handler = _provider.GetService<UseCaseHandler<TUseCase, TData, TOut>>();
