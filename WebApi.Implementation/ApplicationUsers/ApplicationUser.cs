@@ -1,11 +1,6 @@
-﻿using WebApi.Application.ApplicationUsers;
+﻿using System.Globalization;
+using WebApi.Application.ApplicationUsers;
 using WebApi.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.ApplicationUsers
 {

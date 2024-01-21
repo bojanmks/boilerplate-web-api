@@ -1,9 +1,4 @@
 ﻿using WebApi.DataAccess.Entities.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.DataAccess.Entities
 {

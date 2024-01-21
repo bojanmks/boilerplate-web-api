@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebApi.Application.Exceptions.Abstraction
+﻿namespace WebApi.Application.Exceptions.Abstraction
 {
     public abstract class FormattedException : Exception
     {

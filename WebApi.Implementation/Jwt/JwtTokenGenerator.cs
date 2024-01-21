@@ -1,17 +1,10 @@
-﻿using WebApi.Application.AppSettings;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using WebApi.Application.AppSettings;
 using WebApi.Application.Jwt;
 using WebApi.Common.DTO;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Runtime;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.Jwt
 {

@@ -3,11 +3,6 @@ using WebApi.Application.Jwt;
 using WebApi.Common.DTO;
 using WebApi.DataAccess;
 using WebApi.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.Jwt
 {

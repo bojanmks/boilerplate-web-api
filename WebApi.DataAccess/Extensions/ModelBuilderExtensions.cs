@@ -1,14 +1,6 @@
-﻿using WebApi.DataAccess.Entities.Abstraction;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.DataAccess.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.DataAccess.Extensions
 {

@@ -1,12 +1,7 @@
-﻿using WebApi.Api.ExceptionHandling;
+﻿using Newtonsoft.Json;
+using WebApi.Api.ExceptionHandling;
 using WebApi.Api.ExceptionHandling.Abstraction;
-using WebApi.Api.Extensions;
 using WebApi.Application.Logging;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace WebApi.Api.Middleware
 {

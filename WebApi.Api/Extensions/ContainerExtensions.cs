@@ -1,4 +1,13 @@
-﻿using WebApi.Api.Core;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Data;
+using System.Data.SqlClient;
+using System.Reflection;
+using System.Text;
+using WebApi.Api.Core;
 using WebApi.Api.ExceptionHandling;
 using WebApi.Api.ExceptionHandling.Abstraction;
 using WebApi.Application.ApplicationUsers;
@@ -14,15 +23,6 @@ using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
 using WebApi.Implementation.UseCases;
-using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Data;
-using System.Data.SqlClient;
-using System.Reflection;
-using System.Text;
 
 namespace WebApi.Api.Extensions
 {
@@ -278,7 +278,7 @@ namespace WebApi.Api.Extensions
             var assembliesToLookThrough = new Assembly[] { Assembly.GetExecutingAssembly() };
 
             var exceptionResponseGeneratorTypesData = interfaceType.GetGenericInterfaceImplementationTypes(assembliesToLookThrough);
-            
+
             foreach (var typeData in exceptionResponseGeneratorTypesData)
             {
                 services.AddTransient(typeData.ImplementedInterface, typeData.ImplementationType);

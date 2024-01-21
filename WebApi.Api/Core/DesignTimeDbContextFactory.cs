@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
-using WebApi.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using WebApi.Application.AppSettings;
+using WebApi.DataAccess;
 
 namespace WebApi.Api.Core
 {

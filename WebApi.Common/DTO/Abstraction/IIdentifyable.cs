@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebApi.Common.DTO.Abstraction
+﻿namespace WebApi.Common.DTO.Abstraction
 {
     public interface IIdentifyable
     {

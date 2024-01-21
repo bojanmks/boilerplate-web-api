@@ -1,11 +1,6 @@
 ﻿using WebApi.Common.Attributes;
 using WebApi.Common.Enums;
 using WebApi.Common.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.UseCases
 {
@@ -17,14 +12,14 @@ namespace WebApi.Implementation.UseCases
                 UserRole.Admin,
                 new List<string>
                 {
-                    "AddMuscleGroup", "UpdateMuscleGroup", "DeleteMuscleGroup", "FindMuscleGroup"
+
                 }
             },
             {
                 UserRole.Regular,
                 new List<string>
                 {
-                    "RefreshToken", "SearchMuscleGroups"
+                    "RefreshToken"
                 }
             },
             {

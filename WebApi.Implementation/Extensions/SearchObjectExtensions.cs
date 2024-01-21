@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Dynamic.Core;
 using WebApi.Application.Exceptions;
 using WebApi.Application.Localization;
 using WebApi.Application.Search;
 using WebApi.Application.Search.Attributes;
 using WebApi.Application.Search.Enums;
-using WebApi.Implementation;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.Extensions
 {
@@ -54,7 +48,7 @@ namespace WebApi.Implementation.Extensions
             {
                 var propertyValue = propertyInfo.GetValue(search);
 
-                if(!propertyInfo.HasAttributeOfType<AllowNullAttribute>() && propertyValue is null)
+                if (!propertyInfo.HasAttributeOfType<AllowNullAttribute>() && propertyValue is null)
                 {
                     continue;
                 }
@@ -119,11 +113,11 @@ namespace WebApi.Implementation.Extensions
                 var sortByArgs = sortByString.Split(',');
                 string orderByClause = "";
 
-                foreach(var arg in sortByArgs)
+                foreach (var arg in sortByArgs)
                 {
                     var propAndDirection = arg.Split('.');
 
-                    if(propAndDirection.Count() != 2)
+                    if (propAndDirection.Count() != 2)
                     {
                         throw new InvalidSortFormatException(Translator);
                     }
@@ -141,7 +135,7 @@ namespace WebApi.Implementation.Extensions
                         continue;
                     }
 
-                    if(!typeof(T).GetProperties().Any(x => x.Name.ToLower() == propAndDirection[0].ToLower()))
+                    if (!typeof(T).GetProperties().Any(x => x.Name.ToLower() == propAndDirection[0].ToLower()))
                     {
                         throw new PropertyNotFoundException(Translator, propAndDirection[0]);
                     }
@@ -168,7 +162,7 @@ namespace WebApi.Implementation.Extensions
 
         private static string GetComparisonString(string property, object value, ComparisonType comparisonType)
         {
-            switch(comparisonType)
+            switch (comparisonType)
             {
                 case ComparisonType.Equals:
                     return $"{property} == {FormatValue(value)}";

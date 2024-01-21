@@ -1,5 +1,4 @@
 ﻿using WebApi.Api.ExceptionHandling.Abstraction;
-using System.Reflection;
 
 namespace WebApi.Api.Extensions
 {

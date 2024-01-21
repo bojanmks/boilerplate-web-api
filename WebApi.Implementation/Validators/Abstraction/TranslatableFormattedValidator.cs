@@ -1,11 +1,6 @@
-﻿using WebApi.Application.Localization;
+﻿using FluentValidation;
+using WebApi.Application.Localization;
 using WebApi.Application.UseCases;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.Validators.Abstraction
 {

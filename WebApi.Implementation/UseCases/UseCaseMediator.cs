@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;
@@ -7,7 +8,6 @@ using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
 using WebApi.Implementation.Exceptions;
 using WebApi.Implementation.UseCaseHandlers.Generic;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.Implementation.UseCases
 {
@@ -16,10 +16,10 @@ namespace WebApi.Implementation.UseCases
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _provider;
-        public UseCaseMediator(DatabaseContext context, 
-                               IMapper mapper, 
-                               IServiceProvider provider, 
-                               IApplicationUser user, 
+        public UseCaseMediator(DatabaseContext context,
+                               IMapper mapper,
+                               IServiceProvider provider,
+                               IApplicationUser user,
                                IUseCaseLogger logger,
                                UserRoleUseCaseMap userRoleUseCaseMap)
         {
@@ -85,7 +85,7 @@ namespace WebApi.Implementation.UseCases
         {
             var handler = _provider.GetService<UseCaseHandler<TUseCase, TData, TOut>>();
 
-            if(handler is null)
+            if (handler is null)
             {
                 throw new HandlerNotFoundException();
             }

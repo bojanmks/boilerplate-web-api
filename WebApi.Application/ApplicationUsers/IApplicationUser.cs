@@ -1,11 +1,5 @@
-﻿using WebApi.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
+using WebApi.Common.Enums;
 
 namespace WebApi.Application.ApplicationUsers
 {

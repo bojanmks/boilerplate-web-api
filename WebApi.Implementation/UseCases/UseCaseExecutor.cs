@@ -1,16 +1,11 @@
-﻿using WebApi.Application.ApplicationUsers;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Logging;
 using WebApi.Application.Logging.LoggerData;
 using WebApi.Application.UseCases;
 using WebApi.Implementation.Exceptions;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.UseCases
 {

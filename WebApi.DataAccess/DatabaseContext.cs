@@ -1,11 +1,6 @@
-﻿using WebApi.DataAccess.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApi.DataAccess.Entities;
 using WebApi.DataAccess.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.DataAccess
 {

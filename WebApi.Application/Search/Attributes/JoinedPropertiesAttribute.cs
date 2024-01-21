@@ -1,10 +1,5 @@
 ﻿using WebApi.Application.Extensions;
 using WebApi.Application.Search.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Application.Search.Attributes
 {

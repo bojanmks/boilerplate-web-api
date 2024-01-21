@@ -1,5 +1,5 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
-using FluentValidation;
+﻿using FluentValidation;
+using WebApi.Api.ExceptionHandling.Abstraction;
 
 namespace WebApi.Api.ExceptionHandling.ResponseGenerators
 {

@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using WebApi.Application.UseCases;
 using WebApi.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {

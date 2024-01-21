@@ -1,18 +1,10 @@
 ﻿using AutoMapper;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
-using WebApi.Application.UseCases;
 using WebApi.Application.UseCases.Auth;
 using WebApi.Common.DTO;
 using WebApi.DataAccess;
-using WebApi.DataAccess.Entities;
-using WebApi.Implementation.Jwt;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApi.Implementation.UseCaseHandlers.Auth
 {

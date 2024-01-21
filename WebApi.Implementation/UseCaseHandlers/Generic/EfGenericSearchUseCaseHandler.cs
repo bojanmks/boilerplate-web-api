@@ -3,12 +3,6 @@ using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
 using WebApi.Implementation.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {

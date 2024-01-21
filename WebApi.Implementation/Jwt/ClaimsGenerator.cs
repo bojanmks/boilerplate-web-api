@@ -1,14 +1,7 @@
-﻿using WebApi.Application.AppSettings;
-using WebApi.Common.DTO;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Runtime;
-using System.Runtime.CompilerServices;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using WebApi.Application.AppSettings;
+using WebApi.Common.DTO;
 
 namespace WebApi.Implementation.Jwt
 {

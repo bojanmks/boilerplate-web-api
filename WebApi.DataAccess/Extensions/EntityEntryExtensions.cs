@@ -1,11 +1,6 @@
-﻿using WebApi.DataAccess.Entities.Abstraction;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.DataAccess.Extensions
 {
