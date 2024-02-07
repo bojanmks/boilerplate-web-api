@@ -29,5 +29,17 @@ namespace WebApi.Api.Extensions
 
             return returnData;
         }
+
+        public static TAttribute GetAttributeOfType<TAttribute>(this Type type) where TAttribute : Attribute
+        {
+            var attribute = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
+
+            if (attribute is not null)
+            {
+                return attribute;
+            }
+
+            return null;
+        }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using WebApi.Application.Localization;
-using WebApi.Application.UseCases;
 
 namespace WebApi.Implementation.Validators.Abstraction
 {
-    public abstract class TranslatableFormattedValidator<TUseCase> : AbstractValidator<TUseCase> where TUseCase : IUseCase
+    public abstract class TranslatableFormattedValidator<TUseCase> : AbstractValidator<TUseCase>
     {
         private readonly ITranslator _translator;
 

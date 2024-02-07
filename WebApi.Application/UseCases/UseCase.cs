@@ -4,12 +4,11 @@
     {
         public TData Data { get; }
 
-        public UseCase(TData data)
+        protected UseCase(TData data)
         {
             Data = data;
         }
 
         public abstract string Id { get; }
-        public virtual string Description { get; }
     }
 }

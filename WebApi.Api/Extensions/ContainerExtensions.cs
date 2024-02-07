@@ -16,6 +16,7 @@ using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
 using WebApi.Application.UseCases;
+using WebApi.Application.UseCases.Attributes;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
@@ -85,12 +86,11 @@ namespace WebApi.Api.Extensions
             services.AddUseCases();
             services.AddAutoMapper();
             services.AddExceptionResponseGenerators();
-            services.SetupLocalization(appSettings);
+            services.SetupLocalization();
 
             services.AddTransient(provider => new SqlConnection(appSettings.ConnectionStrings.Primary));
             services.AddTransient<IDbConnection>(provider => provider.GetService<SqlConnection>());
 
-            services.AddTransient<UserRoleUseCaseMap>();
             services.AddTransient<IUseCaseLogger, ConsoleUseCaseLogger>();
             services.AddTransient<IExceptionLogger, ConsoleExceptionLogger>();
             services.AddTransient<IExceptionResponseGeneratorGetter, ExceptionResponseGeneratorGetter>();
@@ -168,7 +168,7 @@ namespace WebApi.Api.Extensions
                 var locale = localeGetter.GetLocale();
 
                 var accessor = provider.GetService<IHttpContextAccessor>();
-                var userRoleUseCaseMap = provider.GetService<UserRoleUseCaseMap>();
+                var userRoleUseCaseMap = provider.GetService<UserRoleUseCaseMapStore>();
 
                 var anonymousUser = new AnonymousUser
                 {
@@ -214,22 +214,23 @@ namespace WebApi.Api.Extensions
             services.AddUseCaseHandlers();
             services.AddUseCaseValidators();
             services.AddUseCaseSubscribers();
+            services.AddUserRoleUseCaseMapStore();
         }
 
         private static void AddUseCaseValidators(this IServiceCollection services)
         {
-            services.AddImplementationsByBaseType<IValidator>(new Assembly[] { typeof(UserRoleUseCaseMap).Assembly });
+            services.AddImplementationsByBaseType<IValidator>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
         }
 
         private static void AddUseCaseHandlers(this IServiceCollection services)
         {
-            services.AddImplementationsByBaseType<IUseCaseHandler>(new Assembly[] { typeof(UserRoleUseCaseMap).Assembly });
+            services.AddImplementationsByBaseType<IUseCaseHandler>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
         }
 
         private static void AddUseCaseSubscribers(this IServiceCollection services)
         {
             var interfaceType = typeof(IUseCaseSubscriber<,,>);
-            var assembliesToLookThrough = new Assembly[] { typeof(UserRoleUseCaseMap).Assembly };
+            var assembliesToLookThrough = new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly };
 
             var useCaseSubscribersTypesData = interfaceType.GetGenericInterfaceImplementationTypes(assembliesToLookThrough);
 
@@ -242,6 +243,39 @@ namespace WebApi.Api.Extensions
                     services.AddTransient(typeData.ImplementedInterface, typeData.ImplementationType);
                 }
             }
+        }
+
+        private static void AddUserRoleUseCaseMapStore(this IServiceCollection services)
+        {
+            var useCasesMap = new Dictionary<UserRole, List<string>>();
+
+            foreach (var role in Enum.GetValues<UserRole>())
+            {
+                useCasesMap.Add(role, new List<string>());
+            }
+
+            var useCaseTypes = typeof(UseCase<,>).Assembly.GetImplementationsOfType<IUseCase>();
+
+            foreach (var useCaseType in useCaseTypes)
+            {
+                var allowForRolesAttribute = useCaseType.GetAttributeOfType<AllowForRolesAttribute>();
+
+                if (allowForRolesAttribute is null)
+                {
+                    continue;
+                }
+
+                IUseCase useCaseInstance = (IUseCase)Activator.CreateInstance(useCaseType);
+
+                foreach (var allowedRole in allowForRolesAttribute.Roles)
+                {
+                    useCasesMap[allowedRole].Add(useCaseInstance.Id);
+                }
+            }
+
+            var store = new UserRoleUseCaseMapStore(useCasesMap);
+
+            services.AddSingleton(store);
         }
         #endregion
 
@@ -285,7 +319,7 @@ namespace WebApi.Api.Extensions
             }
         }
 
-        private static void SetupLocalization(this IServiceCollection services, AppSettings appSettings)
+        private static void SetupLocalization(this IServiceCollection services)
         {
             services.AddTransient<ITranslator, SqlTranslator>();
         }

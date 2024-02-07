@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using WebApi.Application.ApplicationUsers;
-using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
@@ -18,10 +16,7 @@ namespace WebApi.Implementation.UseCases
         private readonly IServiceProvider _provider;
         public UseCaseMediator(DatabaseContext context,
                                IMapper mapper,
-                               IServiceProvider provider,
-                               IApplicationUser user,
-                               IUseCaseLogger logger,
-                               UserRoleUseCaseMap userRoleUseCaseMap)
+                               IServiceProvider provider)
         {
             _context = context;
             _mapper = mapper;

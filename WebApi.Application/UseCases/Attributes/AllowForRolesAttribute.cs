@@ -1,12 +1,12 @@
 ﻿using WebApi.Common.Enums;
 
-namespace WebApi.Common.Attributes
+namespace WebApi.Application.UseCases.Attributes
 {
-    public class InheritUseCasesAttribute : Attribute
+    public class AllowForRolesAttribute : Attribute
     {
         private readonly UserRole[] _roles;
 
-        public InheritUseCasesAttribute(params UserRole[] roles)
+        public AllowForRolesAttribute(params UserRole[] roles)
         {
             _roles = roles;
         }
