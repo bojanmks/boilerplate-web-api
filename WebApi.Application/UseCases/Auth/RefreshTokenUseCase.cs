@@ -7,8 +7,6 @@ namespace WebApi.Application.UseCases.Auth
     [AllowForRoles(UserRole.Anonymous)]
     public class RefreshTokenUseCase : UseCase<Tokens, Tokens>
     {
-        public RefreshTokenUseCase() : base(null) { }
-
         public RefreshTokenUseCase(Tokens data) : base(data)
         {
         }
