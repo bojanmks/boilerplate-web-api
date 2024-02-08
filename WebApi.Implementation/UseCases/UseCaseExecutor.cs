@@ -5,17 +5,24 @@ using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Logging;
 using WebApi.Application.Logging.LoggerData;
 using WebApi.Application.UseCases;
+using WebApi.Application.Validation;
 using WebApi.Implementation.Exceptions;
 
 namespace WebApi.Implementation.UseCases
 {
     public class UseCaseExecutor<TUseCase, TData, TOut> where TUseCase : UseCase<TData, TOut>
     {
-        private readonly IServiceProvider _provider;
+        private readonly IApplicationUser _applicationUser;
+        private readonly IUseCaseLogger _useCaseLogger;
+        private readonly IUseCaseSubscriberGetter _subscriberGetter;
+        private readonly IValidatorGetter _validatorGetter;
 
-        public UseCaseExecutor(IServiceProvider provider)
+        public UseCaseExecutor(IApplicationUser applicationUser, IUseCaseLogger useCaseLogger, IUseCaseSubscriberGetter subscriberGetter, IValidatorGetter validatorGetter)
         {
-            _provider = provider;
+            _applicationUser = applicationUser;
+            _useCaseLogger = useCaseLogger;
+            _subscriberGetter = subscriberGetter;
+            _validatorGetter = validatorGetter;
         }
 
         public TOut Execute(TUseCase useCase, UseCaseHandler<TUseCase, TData, TOut> handler)
@@ -31,28 +38,25 @@ namespace WebApi.Implementation.UseCases
 
         private void ValidateAndLog(TUseCase useCase)
         {
-            var user = _provider.GetService<IApplicationUser>();
-            var useCaseLogger = _provider.GetService<IUseCaseLogger>();
-
-            var isAuthorized = user.AllowedUseCases.Contains(useCase.Id);
+            var isAuthorized = _applicationUser.AllowedUseCases.Contains(useCase.Id);
 
             var log = new UseCaseLoggerData
             {
-                UserId = user.Id,
+                UserId = _applicationUser.Id,
                 UseCaseId = useCase.Id,
                 IsAuthorized = isAuthorized,
                 ExecutionDateTime = DateTime.UtcNow,
                 Data = JsonConvert.SerializeObject(useCase.Data)
             };
 
-            useCaseLogger.Log(log);
+            _useCaseLogger.Log(log);
 
             if (!isAuthorized)
             {
-                throw new ForbiddenUseCaseException(useCase.Id, user.Id.ToString());
+                throw new ForbiddenUseCaseException(useCase.Id, _applicationUser.Id.ToString());
             }
 
-            var validator = _provider.GetService<AbstractValidator<TUseCase>>();
+            var validator = _validatorGetter.GetValidator<TUseCase>();
 
             if (validator is not null)
             {
@@ -62,7 +66,7 @@ namespace WebApi.Implementation.UseCases
 
         private void ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
         {
-            var subscribers = _provider.GetService<IEnumerable<IUseCaseSubscriber<TUseCase, TData, TOut>>>();
+            var subscribers = _subscriberGetter.GetSubscribers<TUseCase, TData, TOut>();
 
             if (subscribers is null)
             {

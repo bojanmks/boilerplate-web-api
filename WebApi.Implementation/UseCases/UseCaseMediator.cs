@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Xml.Linq;
+using WebApi.Application.ApplicationUsers;
+using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;
+using WebApi.Application.Validation;
 using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
 using WebApi.Implementation.Exceptions;
@@ -13,14 +17,27 @@ namespace WebApi.Implementation.UseCases
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
-        private readonly IServiceProvider _provider;
+        private readonly IApplicationUser _applicationUser;
+        private readonly IUseCaseLogger _useCaseLogger;
+        private readonly IUseCaseSubscriberGetter _subscriberGetter;
+        private readonly IValidatorGetter _validatorGetter;
+        private readonly IUseCaseHandlerGetter _useCaseHandlerGetter;
+
         public UseCaseMediator(DatabaseContext context,
                                IMapper mapper,
-                               IServiceProvider provider)
+                               IApplicationUser applicationUser,
+                               IUseCaseLogger useCaseLogger,
+                               IUseCaseSubscriberGetter subscriberGetter,
+                               IValidatorGetter validatorGetter,
+                               IUseCaseHandlerGetter useCaseHandlerGetter)
         {
             _context = context;
             _mapper = mapper;
-            _provider = provider;
+            _applicationUser = applicationUser;
+            _useCaseLogger = useCaseLogger;
+            _subscriberGetter = subscriberGetter;
+            _validatorGetter = validatorGetter;
+            _useCaseHandlerGetter = useCaseHandlerGetter;
         }
 
         public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
@@ -29,7 +46,7 @@ namespace WebApi.Implementation.UseCases
             where TEntity : class
         {
             var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_context);
-            var executor = new UseCaseExecutor<TUseCase, ISearchObject, object>(_provider);
+            var executor = ConstructExecutor<TUseCase, ISearchObject, object>();
 
             return executor.Execute(useCase, handler);
         }
@@ -39,7 +56,7 @@ namespace WebApi.Implementation.UseCases
             where TEntity : class
         {
             var handler = new EfGenericFindUseCaseHandler<TUseCase, TEntity, TOut>(_context, _mapper);
-            var executor = new UseCaseExecutor<TUseCase, int, TOut>(_provider);
+            var executor = ConstructExecutor<TUseCase, int, TOut>();
 
             return executor.Execute(useCase, handler);
         }
@@ -49,7 +66,7 @@ namespace WebApi.Implementation.UseCases
             where TEntity : class
         {
             var handler = new EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity>(_context, _mapper);
-            var executor = new UseCaseExecutor<TUseCase, TData, Empty>(_provider);
+            var executor = ConstructExecutor<TUseCase, TData, Empty>();
 
             return executor.Execute(useCase, handler);
         }
@@ -60,7 +77,7 @@ namespace WebApi.Implementation.UseCases
             where TEntity : class
         {
             var handler = new EfGenericUpdateUseCaseHandler<TUseCase, TData, TEntity>(_context, _mapper);
-            var executor = new UseCaseExecutor<TUseCase, TData, Empty>(_provider);
+            var executor = ConstructExecutor<TUseCase, TData, Empty>();
 
             return executor.Execute(useCase, handler);
         }
@@ -70,7 +87,7 @@ namespace WebApi.Implementation.UseCases
             where TEntity : class
         {
             var handler = new EfGenericDeleteUseCaseHandler<TUseCase, TEntity>(_context);
-            var executor = new UseCaseExecutor<TUseCase, int, Empty>(_provider);
+            var executor = ConstructExecutor<TUseCase, int, Empty>();
 
             return executor.Execute(useCase, handler);
         }
@@ -78,16 +95,21 @@ namespace WebApi.Implementation.UseCases
         public TOut Execute<TUseCase, TData, TOut>(TUseCase useCase)
             where TUseCase : UseCase<TData, TOut>
         {
-            var handler = _provider.GetService<UseCaseHandler<TUseCase, TData, TOut>>();
+            var handler = _useCaseHandlerGetter.GetHandler<TUseCase, TData, TOut>();
 
             if (handler is null)
             {
                 throw new HandlerNotFoundException();
             }
 
-            var executor = new UseCaseExecutor<TUseCase, TData, TOut>(_provider);
+            var executor = ConstructExecutor<TUseCase, TData, TOut>();
 
             return executor.Execute(useCase, handler);
+        }
+
+        private UseCaseExecutor<TUseCase, TData, TOut> ConstructExecutor<TUseCase, TData, TOut>() where TUseCase : UseCase<TData, TOut>
+        {
+            return new UseCaseExecutor<TUseCase, TData, TOut>(_applicationUser, _useCaseLogger, _subscriberGetter, _validatorGetter);
         }
     }
 }

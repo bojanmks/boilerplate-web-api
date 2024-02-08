@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WebApi.Common\WebApi.Common.csproj" />
     <ProjectReference Include="..\WebApi.DataAccess\WebApi.DataAccess.csproj" />
   </ItemGroup>

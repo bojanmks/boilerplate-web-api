@@ -17,6 +17,7 @@ using WebApi.Application.Localization;
 using WebApi.Application.Logging;
 using WebApi.Application.UseCases;
 using WebApi.Application.UseCases.Attributes;
+using WebApi.Application.Validation;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
@@ -24,6 +25,7 @@ using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
 using WebApi.Implementation.UseCases;
+using WebApi.Implementation.Validators;
 
 namespace WebApi.Api.Extensions
 {
@@ -93,7 +95,7 @@ namespace WebApi.Api.Extensions
 
             services.AddTransient<IUseCaseLogger, ConsoleUseCaseLogger>();
             services.AddTransient<IExceptionLogger, ConsoleExceptionLogger>();
-            services.AddTransient<IExceptionResponseGeneratorGetter, ExceptionResponseGeneratorGetter>();
+            services.AddTransient<IExceptionResponseGeneratorGetter, ServiceProviderExceptionResponseGeneratorGetter>();
             services.AddTransient<TokenCryptor>();
             services.AddTransient<ClaimsGenerator>();
             services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -220,11 +222,13 @@ namespace WebApi.Api.Extensions
         private static void AddUseCaseValidators(this IServiceCollection services)
         {
             services.AddImplementationsByBaseType<IValidator>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
+            services.AddTransient<IValidatorGetter, ServiceProviderValidatorGetter>();
         }
 
         private static void AddUseCaseHandlers(this IServiceCollection services)
         {
             services.AddImplementationsByBaseType<IUseCaseHandler>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
+            services.AddTransient<IUseCaseHandlerGetter, ServiceProviderUseCaseHandlerGetter>();
         }
 
         private static void AddUseCaseSubscribers(this IServiceCollection services)
@@ -243,6 +247,8 @@ namespace WebApi.Api.Extensions
                     services.AddTransient(typeData.ImplementedInterface, typeData.ImplementationType);
                 }
             }
+
+            services.AddTransient<IUseCaseSubscriberGetter, ServiceProviderUseCaseSubscriberGetter>();
         }
 
         private static void AddUserRoleUseCaseMapStore(this IServiceCollection services)

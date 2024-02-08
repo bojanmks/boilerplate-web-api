@@ -3,11 +3,11 @@ using WebApi.Api.Extensions;
 
 namespace WebApi.Api.ExceptionHandling
 {
-    public class ExceptionResponseGeneratorGetter : IExceptionResponseGeneratorGetter
+    public class ServiceProviderExceptionResponseGeneratorGetter : IExceptionResponseGeneratorGetter
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public ExceptionResponseGeneratorGetter(IServiceProvider serviceProvider)
+        public ServiceProviderExceptionResponseGeneratorGetter(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
