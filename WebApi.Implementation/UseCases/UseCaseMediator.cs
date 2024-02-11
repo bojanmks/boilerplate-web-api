@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using WebApi.Application.ApplicationUsers;
+using WebApi.Application.Core;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Application.Validation;
 using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
+using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Exceptions;
 using WebApi.Implementation.UseCaseHandlers.Generic;
 
@@ -20,6 +22,7 @@ namespace WebApi.Implementation.UseCases
         private readonly IUseCaseSubscriberGetter _subscriberGetter;
         private readonly IValidatorGetter _validatorGetter;
         private readonly IUseCaseHandlerGetter _useCaseHandlerGetter;
+        private readonly IDeleteHandler _deleteHandler;
 
         public UseCaseMediator(DatabaseContext context,
                                IMapper mapper,
@@ -27,7 +30,8 @@ namespace WebApi.Implementation.UseCases
                                IUseCaseLogger useCaseLogger,
                                IUseCaseSubscriberGetter subscriberGetter,
                                IValidatorGetter validatorGetter,
-                               IUseCaseHandlerGetter useCaseHandlerGetter)
+                               IUseCaseHandlerGetter useCaseHandlerGetter,
+                               IDeleteHandler deleteHandler)
         {
             _context = context;
             _mapper = mapper;
@@ -36,6 +40,7 @@ namespace WebApi.Implementation.UseCases
             _subscriberGetter = subscriberGetter;
             _validatorGetter = validatorGetter;
             _useCaseHandlerGetter = useCaseHandlerGetter;
+            _deleteHandler = deleteHandler;
         }
 
         public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
@@ -82,9 +87,9 @@ namespace WebApi.Implementation.UseCases
 
         public Empty Delete<TUseCase, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<int, Empty>
-            where TEntity : class
+            where TEntity : Entity
         {
-            var handler = new EfGenericDeleteUseCaseHandler<TUseCase, TEntity>(_context);
+            var handler = new EfGenericDeleteUseCaseHandler<TUseCase, TEntity>(_context, _deleteHandler);
             var executor = ConstructExecutor<TUseCase, int, Empty>();
 
             return executor.Execute(useCase, handler);

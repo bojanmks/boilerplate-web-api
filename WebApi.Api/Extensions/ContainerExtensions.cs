@@ -12,18 +12,22 @@ using WebApi.Api.ExceptionHandling;
 using WebApi.Api.ExceptionHandling.Abstraction;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.AppSettings;
+using WebApi.Application.Core;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
+using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Application.UseCases.Attributes;
 using WebApi.Application.Validation;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
+using WebApi.Implementation.Core;
 using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
+using WebApi.Implementation.Search;
 using WebApi.Implementation.UseCases;
 using WebApi.Implementation.Validators;
 
@@ -101,6 +105,8 @@ namespace WebApi.Api.Extensions
             services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
             services.AddTransient<IJwtTokenStorage, JwtTokenStorage>();
+            services.AddTransient<ISearchObjectQueryBuilder, EfSearchObjectQueryBuilder>();
+            services.AddTransient<IDeleteHandler, EfDeleteHandler>();
         }
 
         private static void AddDbContext(this IServiceCollection services, AppSettings appSettings)
