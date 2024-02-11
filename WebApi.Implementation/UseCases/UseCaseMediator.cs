@@ -22,7 +22,7 @@ namespace WebApi.Implementation.UseCases
         private readonly IUseCaseSubscriberGetter _subscriberGetter;
         private readonly IValidatorGetter _validatorGetter;
         private readonly IUseCaseHandlerGetter _useCaseHandlerGetter;
-        private readonly IDeleteHandler _deleteHandler;
+        private readonly IEntityDeletionHandler _deleteHandler;
 
         public UseCaseMediator(DatabaseContext context,
                                IMapper mapper,
@@ -31,7 +31,7 @@ namespace WebApi.Implementation.UseCases
                                IUseCaseSubscriberGetter subscriberGetter,
                                IValidatorGetter validatorGetter,
                                IUseCaseHandlerGetter useCaseHandlerGetter,
-                               IDeleteHandler deleteHandler)
+                               IEntityDeletionHandler deleteHandler)
         {
             _context = context;
             _mapper = mapper;

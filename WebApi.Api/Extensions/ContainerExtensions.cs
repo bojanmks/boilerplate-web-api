@@ -106,7 +106,7 @@ namespace WebApi.Api.Extensions
             services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
             services.AddTransient<IJwtTokenStorage, JwtTokenStorage>();
             services.AddTransient<ISearchObjectQueryBuilder, EfSearchObjectQueryBuilder>();
-            services.AddTransient<IDeleteHandler, EfDeleteHandler>();
+            services.AddTransient<IEntityDeletionHandler, EfEntityDeletionHandler>();
         }
 
         private static void AddDbContext(this IServiceCollection services, AppSettings appSettings)

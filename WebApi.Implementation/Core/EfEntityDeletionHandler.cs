@@ -4,11 +4,11 @@ using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.Core
 {
-    public class EfDeleteHandler : IDeleteHandler
+    public class EfEntityDeletionHandler : IEntityDeletionHandler
     {
         private readonly DatabaseContext _context;
 
-        public EfDeleteHandler(DatabaseContext context)
+        public EfEntityDeletionHandler(DatabaseContext context)
         {
             _context = context;
         }

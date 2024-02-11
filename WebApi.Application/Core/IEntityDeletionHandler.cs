@@ -2,7 +2,7 @@
 
 namespace WebApi.Application.Core
 {
-    public interface IDeleteHandler
+    public interface IEntityDeletionHandler
     {
         void Delete<TEntity>(TEntity entity, bool forceHardDelete = false) where TEntity : Entity;
     }

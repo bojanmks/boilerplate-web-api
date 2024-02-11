@@ -11,9 +11,9 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
         where TEntity : Entity
     {
         private readonly DatabaseContext _context;
-        private readonly IDeleteHandler _deleteHandler;
+        private readonly IEntityDeletionHandler _deleteHandler;
 
-        public EfGenericDeleteUseCaseHandler(DatabaseContext context, IDeleteHandler deleteHandler)
+        public EfGenericDeleteUseCaseHandler(DatabaseContext context, IEntityDeletionHandler deleteHandler)
         {
             _context = context;
             _deleteHandler = deleteHandler;
