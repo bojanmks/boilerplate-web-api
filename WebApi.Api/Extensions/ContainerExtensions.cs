@@ -272,7 +272,7 @@ namespace WebApi.Api.Extensions
                 }
 
                 var useCaseDataType = useCaseType.BaseType.GenericTypeArguments[0].GetDefault();
-                var useCaseInstance = (IUseCase)Activator.CreateInstance(useCaseType, new object[] { useCaseDataType } );
+                var useCaseInstance = (IUseCase)Activator.CreateInstance(useCaseType, new object[] { useCaseDataType });
 
                 foreach (var allowedRole in allowForRolesAttribute.Roles)
                 {

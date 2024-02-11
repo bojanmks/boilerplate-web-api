@@ -14,7 +14,14 @@ namespace WebApi.Implementation.UseCases
 
         public IEnumerable<IUseCaseSubscriber<TUseCase, TData, TOut>> GetSubscribers<TUseCase, TData, TOut>() where TUseCase : UseCase<TData, TOut>
         {
-            return _serviceProvider.GetService<IEnumerable<IUseCaseSubscriber<TUseCase, TData, TOut>>>();
+            var subscribers = _serviceProvider.GetService<IEnumerable<IUseCaseSubscriber<TUseCase, TData, TOut>>>();
+
+            if (subscribers is null)
+            {
+                return null;
+            }
+
+            return subscribers.OrderBy(x => x.Order);
         }
     }
 }

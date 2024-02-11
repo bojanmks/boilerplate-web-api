@@ -1,30 +1,36 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Dynamic.Core;
 using WebApi.Application.Exceptions;
 using WebApi.Application.Localization;
 using WebApi.Application.Search;
 using WebApi.Application.Search.Attributes;
 using WebApi.Application.Search.Enums;
+using WebApi.Implementation.Extensions;
 
-namespace WebApi.Implementation.Extensions
+namespace WebApi.Implementation.Search
 {
-    public static class SearchObjectExtensions
+    public class EfSearchObjectQueryBuilder : ISearchObjectQueryBuilder
     {
-        private static IMapper Mapper => ServiceProviderGetter.GetProvider().GetService<IMapper>();
-        private static ITranslator Translator => ServiceProviderGetter.GetProvider().GetService<ITranslator>();
+        private readonly IMapper _mapper;
+        private readonly ITranslator _translator;
 
-        public static object BuildDynamicQuery<T, TData>(this ISearchObject search, IQueryable<T> query)
+        public EfSearchObjectQueryBuilder(IMapper mapper, ITranslator translator)
         {
-            query = search.BuildQuery(query);
-            query = search.BuildOrderBy(query);
+            _mapper = mapper;
+            _translator = translator;
+        }
 
-            var response = search.BuildResponse<T, TData>(query);
+        public object BuildDynamicQuery<T, TData>(ISearchObject search, IQueryable<T> query)
+        {
+            query = BuildQuery(search, query);
+            query = BuildOrderBy(search, query);
+
+            var response = BuildResponse<T, TData>(search, query);
 
             return response;
         }
 
-        public static object BuildResponse<T, TData>(this ISearchObject search, IQueryable<T> query)
+        public object BuildResponse<T, TData>(ISearchObject search, IQueryable<T> query)
         {
             if (search.Paginate)
             {
@@ -33,14 +39,14 @@ namespace WebApi.Implementation.Extensions
                     Page = search.Page,
                     PerPage = search.PerPage,
                     TotalCount = query.Count(),
-                    Items = Mapper.Map<IEnumerable<TData>>(query.Skip((search.Page - 1) * search.PerPage).Take(search.PerPage).ToList())
+                    Items = _mapper.Map<IEnumerable<TData>>(query.Skip((search.Page - 1) * search.PerPage).Take(search.PerPage).ToList())
                 };
             }
 
-            return Mapper.Map<IEnumerable<TData>>(query.ToList());
+            return _mapper.Map<IEnumerable<TData>>(query.ToList());
         }
 
-        public static IQueryable<T> BuildQuery<T>(this ISearchObject search, IQueryable<T> query)
+        public IQueryable<T> BuildQuery<T>(ISearchObject search, IQueryable<T> query)
         {
             var searchObjectProperties = search.GetType().GetProperties();
 
@@ -97,14 +103,14 @@ namespace WebApi.Implementation.Extensions
             return query;
         }
 
-        public static IEnumerable<TData> BuildQuery<T, TData>(this ISearchObject search, IQueryable<T> query)
+        public IEnumerable<TData> BuildQuery<T, TData>(ISearchObject search, IQueryable<T> query)
         {
-            query = search.BuildQuery(query);
+            query = BuildQuery(search, query);
 
-            return Mapper.Map<IEnumerable<TData>>(query.ToList());
+            return _mapper.Map<IEnumerable<TData>>(query.ToList());
         }
 
-        public static IQueryable<T> BuildOrderBy<T>(this ISearchObject search, IQueryable<T> query)
+        public IQueryable<T> BuildOrderBy<T>(ISearchObject search, IQueryable<T> query)
         {
             var sortByString = search.SortBy;
 
@@ -119,12 +125,12 @@ namespace WebApi.Implementation.Extensions
 
                     if (propAndDirection.Count() != 2)
                     {
-                        throw new InvalidSortFormatException(Translator);
+                        throw new InvalidSortFormatException(_translator);
                     }
 
                     if (!SortDirections.Contains(propAndDirection[1]))
                     {
-                        throw new InvalidSortDirectionException(Translator);
+                        throw new InvalidSortDirectionException(_translator);
                     }
 
                     if (search.CustomSortBy.ContainsKey(propAndDirection[0]))
@@ -137,7 +143,7 @@ namespace WebApi.Implementation.Extensions
 
                     if (!typeof(T).GetProperties().Any(x => x.Name.ToLower() == propAndDirection[0].ToLower()))
                     {
-                        throw new PropertyNotFoundException(Translator, propAndDirection[0]);
+                        throw new PropertyNotFoundException(_translator, propAndDirection[0]);
                     }
 
                     orderByClause += $"{propAndDirection[0]} {propAndDirection[1]},";
@@ -151,16 +157,16 @@ namespace WebApi.Implementation.Extensions
             return query;
         }
 
-        public static IEnumerable<TData> BuildOrderBy<T, TData>(this ISearchObject search, IQueryable<T> query)
+        public IEnumerable<TData> BuildOrderBy<T, TData>(ISearchObject search, IQueryable<T> query)
         {
-            query = search.BuildOrderBy(query);
+            query = BuildOrderBy(search, query);
 
-            return Mapper.Map<IEnumerable<TData>>(query.ToList());
+            return _mapper.Map<IEnumerable<TData>>(query.ToList());
         }
 
         private static IEnumerable<string> SortDirections = new List<string> { "asc", "desc" };
 
-        private static string GetComparisonString(string property, object value, ComparisonType comparisonType)
+        private string GetComparisonString(string property, object value, ComparisonType comparisonType)
         {
             switch (comparisonType)
             {
@@ -181,12 +187,12 @@ namespace WebApi.Implementation.Extensions
             }
         }
 
-        private static string GetComparisonStringAnyProperty(string collection, string property, object value, ComparisonType comparisonType)
+        private string GetComparisonStringAnyProperty(string collection, string property, object value, ComparisonType comparisonType)
         {
             return $"y.{collection}.Any(x => {GetComparisonString(property, value, comparisonType)})";
         }
 
-        private static object FormatValue(object value)
+        private object FormatValue(object value)
         {
             if (value is null) return "null";
 

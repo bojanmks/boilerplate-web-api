@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using System.Xml.Linq;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;

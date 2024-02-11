@@ -1,6 +1,5 @@
 using WebApi.Api.Extensions;
 using WebApi.Api.Middleware;
-using WebApi.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +30,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-ServiceProviderGetter.SetupProvider(app.Services);
 
 app.Run();

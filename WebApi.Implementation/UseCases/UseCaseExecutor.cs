@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Logging;
@@ -73,7 +72,7 @@ namespace WebApi.Implementation.UseCases
                 return;
             }
 
-            foreach (var subscriber in subscribers.OrderBy(x => x.Order))
+            foreach (var subscriber in subscribers)
             {
                 subscriber.OnUseCaseExecuted(new UseCaseSubscriberData<TData, TOut>
                 {

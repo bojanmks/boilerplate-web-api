@@ -2,7 +2,6 @@
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
-using WebApi.Implementation.Extensions;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
@@ -12,6 +11,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
         where TEntity : class
     {
         private readonly DatabaseContext _context;
+        private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
 
         public EfGenericSearchUseCaseHandler(DatabaseContext context)
         {
@@ -24,7 +24,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             var searchObj = useCase.Data;
 
-            return searchObj.BuildDynamicQuery<TEntity, TOut>(query);
+            return _searchObjectQueryBuilder.BuildDynamicQuery<TEntity, TOut>(searchObj, query);
         }
     }
 }
