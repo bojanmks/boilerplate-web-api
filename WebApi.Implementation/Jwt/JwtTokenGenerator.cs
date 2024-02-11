@@ -71,11 +71,11 @@ namespace WebApi.Implementation.Jwt
 
             return credentials;
         }
-    }
 
-    public class TokenGenerationData
-    {
-        public List<Claim> Claims { get; set; }
-        public DateTime Expires { get; set; }
+        private class TokenGenerationData
+        {
+            public List<Claim> Claims { get; set; }
+            public DateTime Expires { get; set; }
+        }
     }
 }

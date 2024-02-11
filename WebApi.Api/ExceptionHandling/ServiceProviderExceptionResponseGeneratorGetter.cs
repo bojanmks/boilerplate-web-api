@@ -12,12 +12,12 @@ namespace WebApi.Api.ExceptionHandling
             _serviceProvider = serviceProvider;
         }
 
-        public IExceptionResponseGenerator? Get(Exception ex)
+        public IExceptionResponseGenerator Get(Exception ex)
         {
             var generatorType = ex.GetResponseGeneratorType();
             var generator = _serviceProvider.GetService(generatorType);
 
-            return (IExceptionResponseGenerator?)generator;
+            return (IExceptionResponseGenerator)generator;
         }
     }
 }

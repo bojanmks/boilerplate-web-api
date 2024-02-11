@@ -72,13 +72,15 @@ namespace WebApi.Implementation.UseCases
                 return;
             }
 
+            var subscriberData = new UseCaseSubscriberData<TData, TOut>
+            {
+                UseCaseData = useCase.Data,
+                Response = useCaseResponse
+            };
+
             foreach (var subscriber in subscribers)
             {
-                subscriber.OnUseCaseExecuted(new UseCaseSubscriberData<TData, TOut>
-                {
-                    UseCaseData = useCase.Data,
-                    Response = useCaseResponse
-                });
+                subscriber.OnUseCaseExecuted(subscriberData);
             }
         }
     }
