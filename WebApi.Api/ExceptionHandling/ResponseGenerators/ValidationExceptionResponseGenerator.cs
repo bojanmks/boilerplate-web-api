@@ -37,8 +37,7 @@ namespace WebApi.Api.ExceptionHandling.ResponseGenerators
 
         private ExceptionResponse GetCustomExceptionResponse(ValidationException ex)
         {
-            var customException = ex.Errors.Select(x => x.CustomState as Exception)
-                                           .FirstOrDefault(customState => customState is Exception);
+            var customException = ex.Errors.Select(x => x.CustomState).OfType<Exception>().FirstOrDefault();
 
             if (customException is null)
             {
