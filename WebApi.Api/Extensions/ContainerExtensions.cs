@@ -277,8 +277,15 @@ namespace WebApi.Api.Extensions
                     continue;
                 }
 
-                var useCaseDataType = useCaseType.BaseType.GenericTypeArguments[0].GetDefault();
-                var useCaseInstance = (IUseCase)Activator.CreateInstance(useCaseType, new object[] { useCaseDataType });
+                var constructorParameters = useCaseType.GetConstructors().OrderBy(x => x.GetParameters().Count()).FirstOrDefault()?.GetParameters();
+                var constructorParametersDefaultValues = constructorParameters?.Select(x => x.GetType().GetDefault()).ToArray();
+
+                var useCaseInstance = (IUseCase?)Activator.CreateInstance(useCaseType, constructorParametersDefaultValues);
+
+                if (useCaseInstance is null)
+                {
+                    continue;
+                }
 
                 foreach (var allowedRole in allowForRolesAttribute.Roles)
                 {
