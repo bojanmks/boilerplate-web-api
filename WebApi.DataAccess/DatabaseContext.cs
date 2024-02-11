@@ -26,9 +26,6 @@ namespace WebApi.DataAccess
                     case EntityState.Added:
                         entry.OnAddedBehaviour();
                         break;
-                    case EntityState.Deleted:
-                        entry.OnDeletedBehaviour();
-                        break;
                 }
             }
 
