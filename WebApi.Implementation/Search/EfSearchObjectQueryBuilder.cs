@@ -31,11 +31,14 @@ namespace WebApi.Implementation.Search
 
         public IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
-            var filterExpressions = ((EfBaseSearch<TEntity>)search).GetFilterExpressions();
-
-            foreach (var filterExpression in filterExpressions)
+            if (search is EfBaseSearch<TEntity> efSearch)
             {
-                query = query.Where(filterExpression);
+                var filterExpressions = efSearch.GetFilterExpressions();
+
+                foreach (var filterExpression in filterExpressions)
+                {
+                    query = query.Where(filterExpression);
+                }
             }
 
             return query;
@@ -50,14 +53,12 @@ namespace WebApi.Implementation.Search
 
         public IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
-            string sortByString = search.SortBy;
-
-            if (string.IsNullOrEmpty(sortByString))
+            if (string.IsNullOrEmpty(search.SortBy) || search is not EfBaseSearch<TEntity>)
             {
                 return query;
             }
 
-            var sortByArgs = sortByString.Split(',');
+            var sortByArgs = search.SortBy.Split(',');
 
             foreach (var arg in sortByArgs)
             {
