@@ -7,22 +7,22 @@ namespace WebApi.Implementation.Search.SearchObjects
     {
         public UserSearch()
         {
-            AddFilterProperty(
+            DefineFilterProperty(
                 () => Name,
                 (name) => (x) => (x.FirstName + " " + x.LastName).Contains((string)name)
             );
 
-            AddFilterProperty(
+            DefineFilterProperty(
                 () => Email,
                 (name) => (x) => x.Email.Contains((string)name)
             );
 
-            AddSortByProperty(
+            DefineSortByProperty(
                 "name",
                 (x) => x.FirstName + " " + x.LastName
             );
 
-            AddSortByProperty(
+            DefineSortByProperty(
                 "email",
                 (x) => x.Email
             );

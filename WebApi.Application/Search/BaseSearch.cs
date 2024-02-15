@@ -13,7 +13,7 @@ namespace WebApi.Application.Search
         #region Sorting
         private Dictionary<string, Expression<Func<TEntity, object>>> _sortByPropertiesMap = new();
 
-        protected void AddSortByProperty(string propertyName, Expression<Func<TEntity, object>> expression)
+        protected void DefineSortByProperty(string propertyName, Expression<Func<TEntity, object>> expression)
         {
             _sortByPropertiesMap.Add(propertyName.ToLower(), expression);
         }
@@ -32,13 +32,13 @@ namespace WebApi.Application.Search
         #region Filtering
         private List<SearchFilterPropertyData<TEntity>> _filterProperties = new();
 
-        protected void AddFilterProperty(Func<object> propertyGetter, Func<object, Expression<Func<TEntity, bool>>> expressionGetter, bool allowNull = false)
+        protected void DefineFilterProperty(Func<object> propertyGetter, Func<object, Expression<Func<TEntity, bool>>> expressionGetter, bool allowFilteringByNull = false)
         {
             _filterProperties.Add(new SearchFilterPropertyData<TEntity>
             {
                 PropertyGetter = propertyGetter,
                 ExpressionGetter = expressionGetter,
-                AllowNull = allowNull
+                AllowFilteringByNull = allowFilteringByNull
             });
         }
 
@@ -50,7 +50,7 @@ namespace WebApi.Application.Search
             {
                 var propertyValue = filterPropertyData.PropertyGetter.Invoke();
 
-                if (propertyValue is not null || filterPropertyData.AllowNull)
+                if (propertyValue is not null || filterPropertyData.AllowFilteringByNull)
                 {
                     expressions.Add(filterPropertyData.ExpressionGetter.Invoke(propertyValue));
                 }

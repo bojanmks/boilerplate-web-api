@@ -7,6 +7,6 @@ namespace WebApi.Application.Search
     {
         public Func<object> PropertyGetter { get; set; }
         public Func<object, Expression<Func<TEntity, bool>>> ExpressionGetter { get; set; }
-        public bool AllowNull { get; set; }
+        public bool AllowFilteringByNull { get; set; }
     }
 }
