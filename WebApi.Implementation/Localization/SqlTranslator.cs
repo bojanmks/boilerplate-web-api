@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.Localization;
 
