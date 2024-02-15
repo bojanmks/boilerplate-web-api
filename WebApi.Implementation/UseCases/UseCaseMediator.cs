@@ -23,6 +23,7 @@ namespace WebApi.Implementation.UseCases
         private readonly IValidatorGetter _validatorGetter;
         private readonly IUseCaseHandlerGetter _useCaseHandlerGetter;
         private readonly IEntityDeletionHandler _deleteHandler;
+        private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
 
         public UseCaseMediator(DatabaseContext context,
                                IMapper mapper,
@@ -31,7 +32,8 @@ namespace WebApi.Implementation.UseCases
                                IUseCaseSubscriberGetter subscriberGetter,
                                IValidatorGetter validatorGetter,
                                IUseCaseHandlerGetter useCaseHandlerGetter,
-                               IEntityDeletionHandler deleteHandler)
+                               IEntityDeletionHandler deleteHandler,
+                               ISearchObjectQueryBuilder searchObjectQueryBuilder)
         {
             _context = context;
             _mapper = mapper;
@@ -41,22 +43,23 @@ namespace WebApi.Implementation.UseCases
             _validatorGetter = validatorGetter;
             _useCaseHandlerGetter = useCaseHandlerGetter;
             _deleteHandler = deleteHandler;
+            _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
         public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
-            where TUseCase : UseCase<ISearchObject, object>
+            where TUseCase : UseCase<ISearchObject<TEntity>, object>
             where TOut : IIdentifyable
-            where TEntity : class
+            where TEntity : Entity
         {
-            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_context);
-            var executor = ConstructExecutor<TUseCase, ISearchObject, object>();
+            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_context, _searchObjectQueryBuilder);
+            var executor = ConstructExecutor<TUseCase, ISearchObject<TEntity>, object>();
 
             return executor.Execute(useCase, handler);
         }
 
         public TOut Find<TUseCase, TEntity, TOut>(TUseCase useCase)
             where TUseCase : UseCase<int, TOut>
-            where TEntity : class
+            where TEntity : Entity
         {
             var handler = new EfGenericFindUseCaseHandler<TUseCase, TEntity, TOut>(_context, _mapper);
             var executor = ConstructExecutor<TUseCase, int, TOut>();
@@ -66,7 +69,7 @@ namespace WebApi.Implementation.UseCases
 
         public Empty Insert<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
-            where TEntity : class
+            where TEntity : Entity
         {
             var handler = new EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity>(_context, _mapper);
             var executor = ConstructExecutor<TUseCase, TData, Empty>();
@@ -77,7 +80,7 @@ namespace WebApi.Implementation.UseCases
         public Empty Update<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
             where TData : IIdentifyable
-            where TEntity : class
+            where TEntity : Entity
         {
             var handler = new EfGenericUpdateUseCaseHandler<TUseCase, TData, TEntity>(_context, _mapper);
             var executor = ConstructExecutor<TUseCase, TData, Empty>();

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\WebApi.DataAccess\WebApi.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

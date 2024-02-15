@@ -2,12 +2,13 @@
 using WebApi.Application.Exceptions;
 using WebApi.Application.UseCases;
 using WebApi.DataAccess;
+using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
     public class EfGenericFindUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, int, TOut>
         where TUseCase : UseCase<int, TOut>
-        where TEntity : class
+        where TEntity : Entity
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;

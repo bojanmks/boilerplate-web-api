@@ -1,12 +1,14 @@
-﻿namespace WebApi.Application.Search
+﻿using WebApi.DataAccess.Entities.Abstraction;
+
+namespace WebApi.Application.Search
 {
     public interface ISearchObjectQueryBuilder
     {
-        object BuildDynamicQuery<T, TData>(ISearchObject search, IQueryable<T> query);
-        object BuildResponse<T, TData>(ISearchObject search, IQueryable<T> query);
-        IQueryable<T> BuildQuery<T>(ISearchObject search, IQueryable<T> query);
-        IEnumerable<TData> BuildQuery<T, TData>(ISearchObject search, IQueryable<T> query);
-        IQueryable<T> BuildOrderBy<T>(ISearchObject search, IQueryable<T> query);
-        IEnumerable<TData> BuildOrderBy<T, TData>(ISearchObject search, IQueryable<T> query);
+        object BuildDynamicQuery<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
+        object BuildResponse<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
+        IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
+        IEnumerable<TOut> BuildQuery<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
+        IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
+        IEnumerable<TOut> BuildOrderBy<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity;
     }
 }

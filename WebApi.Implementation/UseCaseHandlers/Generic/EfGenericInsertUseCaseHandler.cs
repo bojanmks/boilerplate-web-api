@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using WebApi.Application.UseCases;
 using WebApi.DataAccess;
+using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
     internal class EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity> : UseCaseHandler<TUseCase, TData, Empty>
         where TUseCase : UseCase<TData, Empty>
-        where TEntity : class
+        where TEntity : Entity
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;

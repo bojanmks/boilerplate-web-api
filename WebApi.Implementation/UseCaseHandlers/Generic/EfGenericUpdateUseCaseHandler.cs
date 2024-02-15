@@ -3,13 +3,14 @@ using WebApi.Application.Exceptions;
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess;
+using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
     public class EfGenericUpdateUseCaseHandler<TUseCase, TData, TEntity> : UseCaseHandler<TUseCase, TData, Empty>
         where TUseCase : UseCase<TData, Empty>
         where TData : IIdentifyable
-        where TEntity : class
+        where TEntity : Entity
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
