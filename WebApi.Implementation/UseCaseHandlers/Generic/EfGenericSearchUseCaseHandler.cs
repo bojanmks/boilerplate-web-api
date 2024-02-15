@@ -6,8 +6,8 @@ using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, ISearchObject<TEntity>, object>
-        where TUseCase : UseCase<ISearchObject<TEntity>, object>
+    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, ISearchObject, object>
+        where TUseCase : UseCase<ISearchObject, object>
         where TOut : IIdentifyable
         where TEntity : Entity
     {

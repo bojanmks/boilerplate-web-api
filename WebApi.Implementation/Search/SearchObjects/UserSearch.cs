@@ -3,7 +3,7 @@ using WebApi.DataAccess.Entities;
 
 namespace WebApi.Implementation.Search.SearchObjects
 {
-    public class UserSearch : BaseSearch<User>
+    public class UserSearch : EfBaseSearch<User>
     {
         public UserSearch()
         {
@@ -17,12 +17,12 @@ namespace WebApi.Implementation.Search.SearchObjects
                 (name) => (x) => x.Email.Contains((string)name)
             );
 
-            DefineSortByProperty(
+            DefineSortProperty(
                 "name",
                 (x) => x.FirstName + " " + x.LastName
             );
 
-            DefineSortByProperty(
+            DefineSortProperty(
                 "email",
                 (x) => x.Email
             );

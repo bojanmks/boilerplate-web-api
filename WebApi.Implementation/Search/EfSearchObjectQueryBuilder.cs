@@ -19,7 +19,7 @@ namespace WebApi.Implementation.Search
             _translator = translator;
         }
 
-        public object BuildDynamicQuery<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public object BuildDynamicQuery<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             query = BuildQuery(search, query);
             query = BuildOrderBy(search, query);
@@ -29,9 +29,9 @@ namespace WebApi.Implementation.Search
             return response;
         }
 
-        public IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
-            var filterExpressions = search.GetFilterExpressions();
+            var filterExpressions = ((EfBaseSearch<TEntity>)search).GetFilterExpressions();
 
             foreach (var filterExpression in filterExpressions)
             {
@@ -41,14 +41,14 @@ namespace WebApi.Implementation.Search
             return query;
         }
 
-        public IEnumerable<TOut> BuildQuery<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public IEnumerable<TOut> BuildQuery<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             query = BuildQuery(search, query);
 
             return _mapper.Map<IEnumerable<TOut>>(query.ToList());
         }
 
-        public IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             string sortByString = search.SortBy;
 
@@ -80,7 +80,7 @@ namespace WebApi.Implementation.Search
                     throw new InvalidSortDirectionException(_translator);
                 }
 
-                var sortByExpression = search.GetSortByPropertyExpression(sortPropertyName);
+                var sortByExpression = ((EfBaseSearch<TEntity>)search).GetSortByPropertyExpression(sortPropertyName);
 
                 if (sortByExpression is null)
                 {
@@ -106,14 +106,14 @@ namespace WebApi.Implementation.Search
             return query;
         }
 
-        public IEnumerable<TOut> BuildOrderBy<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public IEnumerable<TOut> BuildOrderBy<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             query = BuildOrderBy(search, query);
 
             return _mapper.Map<IEnumerable<TOut>>(query.ToList());
         }
 
-        public object BuildResponse<TEntity, TOut>(ISearchObject<TEntity> search, IQueryable<TEntity> query) where TEntity : Entity
+        public object BuildResponse<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             if (search.Paginate)
             {

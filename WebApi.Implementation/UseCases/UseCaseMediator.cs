@@ -47,12 +47,12 @@ namespace WebApi.Implementation.UseCases
         }
 
         public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
-            where TUseCase : UseCase<ISearchObject<TEntity>, object>
+            where TUseCase : UseCase<ISearchObject, object>
             where TOut : IIdentifyable
             where TEntity : Entity
         {
             var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_context, _searchObjectQueryBuilder);
-            var executor = ConstructExecutor<TUseCase, ISearchObject<TEntity>, object>();
+            var executor = ConstructExecutor<TUseCase, ISearchObject, object>();
 
             return executor.Execute(useCase, handler);
         }
