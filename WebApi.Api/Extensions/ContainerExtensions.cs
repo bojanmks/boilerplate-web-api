@@ -12,7 +12,6 @@ using WebApi.Api.ExceptionHandling;
 using WebApi.Api.ExceptionHandling.Abstraction;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.AppSettings;
-using WebApi.Application.EntityDeletion;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
@@ -23,7 +22,7 @@ using WebApi.Application.Validation;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
-using WebApi.Implementation.EntityDeletion;
+using WebApi.Implementation.Core;
 using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
@@ -97,6 +96,7 @@ namespace WebApi.Api.Extensions
             services.AddTransient(provider => new SqlConnection(appSettings.ConnectionStrings.Primary));
             services.AddTransient<IDbConnection>(provider => provider.GetService<SqlConnection>());
 
+            services.AddTransient<EntityAccessor>();
             services.AddTransient<IUseCaseLogger, ConsoleUseCaseLogger>();
             services.AddTransient<IExceptionLogger, ConsoleExceptionLogger>();
             services.AddTransient<IExceptionResponseGeneratorGetter, ServiceProviderExceptionResponseGeneratorGetter>();
@@ -106,7 +106,6 @@ namespace WebApi.Api.Extensions
             services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
             services.AddTransient<IJwtTokenStorage, JwtTokenStorage>();
             services.AddTransient<ISearchObjectQueryBuilder, EfSearchObjectQueryBuilder>();
-            services.AddTransient<IEntityDeletionHandler, EfEntityDeletionHandler>();
         }
 
         private static void AddDbContext(this IServiceCollection services, AppSettings appSettings)
@@ -124,6 +123,8 @@ namespace WebApi.Api.Extensions
 
                 return context;
             });
+
+            services.AddTransient<DbContext>(x => x.GetService<DatabaseContext>());
 
             var config = Configuration.GetConfiguration<AppSettings>();
 

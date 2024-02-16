@@ -2,28 +2,27 @@
 using WebApi.Application.Exceptions;
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
-using WebApi.DataAccess;
 using WebApi.DataAccess.Entities.Abstraction;
+using WebApi.Implementation.Core;
+using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericUpdateUseCaseHandler<TUseCase, TData, TEntity> : UseCaseHandler<TUseCase, TData, Empty>
+    public class EfGenericUpdateUseCaseHandler<TUseCase, TData, TEntity> : EfUseCaseHandler<TUseCase, TData, Empty>
         where TUseCase : UseCase<TData, Empty>
         where TData : IIdentifyable
         where TEntity : Entity
     {
-        private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
 
-        public EfGenericUpdateUseCaseHandler(DatabaseContext context, IMapper mapper)
+        public EfGenericUpdateUseCaseHandler(EntityAccessor accessor, IMapper mapper) : base(accessor)
         {
-            _context = context;
             _mapper = mapper;
         }
 
         public override Empty Handle(TUseCase useCase)
         {
-            var dataFromDb = _context.Set<TEntity>().Find(useCase.Data.Id);
+            var dataFromDb = _accessor.Find<TEntity>(useCase.Data.Id);
 
             if (dataFromDb is null)
             {
@@ -32,7 +31,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             _mapper.Map(useCase.Data, dataFromDb);
 
-            _context.SaveChanges();
+            _accessor.SaveChanges();
 
             return Empty.Value;
         }

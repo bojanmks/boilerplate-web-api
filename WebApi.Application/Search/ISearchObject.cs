@@ -1,7 +1,4 @@
-﻿using System.Linq.Expressions;
-using WebApi.DataAccess.Entities.Abstraction;
-
-namespace WebApi.Application.Search
+﻿namespace WebApi.Application.Search
 {
     public interface ISearchObject
     {

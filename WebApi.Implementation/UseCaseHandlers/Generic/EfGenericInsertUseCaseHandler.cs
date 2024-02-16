@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using WebApi.Application.UseCases;
-using WebApi.DataAccess;
 using WebApi.DataAccess.Entities.Abstraction;
+using WebApi.Implementation.Core;
+using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    internal class EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity> : UseCaseHandler<TUseCase, TData, Empty>
+    internal class EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity> : EfUseCaseHandler<TUseCase, TData, Empty>
         where TUseCase : UseCase<TData, Empty>
         where TEntity : Entity
     {
-        private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
 
-        public EfGenericInsertUseCaseHandler(DatabaseContext context, IMapper mapper)
+        public EfGenericInsertUseCaseHandler(EntityAccessor accessor, IMapper mapper) : base(accessor)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -24,9 +23,8 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             _mapper.Map(useCase.Data, entity);
 
-            _context.Set<TEntity>().Add(entity);
-
-            _context.SaveChanges();
+            _accessor.Add(entity);
+            _accessor.SaveChanges();
 
             return Empty.Value;
         }

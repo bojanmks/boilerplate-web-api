@@ -1,14 +1,14 @@
 ﻿using WebApi.Application.UseCases;
-using WebApi.DataAccess;
+using WebApi.Implementation.Core;
 
 namespace WebApi.Implementation.UseCaseHandlers.Abstraction
 {
     public abstract class EfUseCaseHandler<TUseCase, TData, TOut> : UseCaseHandler<TUseCase, TData, TOut> where TUseCase : UseCase<TData, TOut>
     {
-        protected readonly DatabaseContext _context;
-        public EfUseCaseHandler(DatabaseContext context)
+        protected readonly EntityAccessor _accessor;
+        public EfUseCaseHandler(EntityAccessor accessor)
         {
-            _context = context;
+            _accessor = accessor;
         }
     }
 }

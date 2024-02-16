@@ -1,36 +1,22 @@
-﻿using WebApi.Application.EntityDeletion;
-using WebApi.Application.Exceptions;
-using WebApi.Application.UseCases;
-using WebApi.DataAccess;
+﻿using WebApi.Application.UseCases;
 using WebApi.DataAccess.Entities.Abstraction;
+using WebApi.Implementation.Core;
+using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericDeleteUseCaseHandler<TUseCase, TEntity> : UseCaseHandler<TUseCase, int, Empty>
+    public class EfGenericDeleteUseCaseHandler<TUseCase, TEntity> : EfUseCaseHandler<TUseCase, int, Empty>
         where TUseCase : UseCase<int, Empty>
         where TEntity : Entity
     {
-        private readonly DatabaseContext _context;
-        private readonly IEntityDeletionHandler _deleteHandler;
-
-        public EfGenericDeleteUseCaseHandler(DatabaseContext context, IEntityDeletionHandler deleteHandler)
+        public EfGenericDeleteUseCaseHandler(EntityAccessor accessor) : base(accessor)
         {
-            _context = context;
-            _deleteHandler = deleteHandler;
         }
 
         public override Empty Handle(TUseCase useCase)
         {
-            var dataFromDb = _context.Set<TEntity>().Find(useCase.Data);
-
-            if (dataFromDb is null)
-            {
-                throw new EntityNotFoundException();
-            }
-
-            _deleteHandler.Delete(dataFromDb);
-
-            _context.SaveChanges();
+            _accessor.Delete<TEntity>(useCase.Data);
+            _accessor.SaveChanges();
 
             return Empty.Value;
         }

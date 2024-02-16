@@ -1,28 +1,27 @@
 ﻿using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Abstraction;
-using WebApi.DataAccess;
 using WebApi.DataAccess.Entities.Abstraction;
+using WebApi.Implementation.Core;
+using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, ISearchObject, object>
+    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : EfUseCaseHandler<TUseCase, ISearchObject, object>
         where TUseCase : UseCase<ISearchObject, object>
         where TOut : IIdentifyable
         where TEntity : Entity
     {
-        private readonly DatabaseContext _context;
         private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
 
-        public EfGenericSearchUseCaseHandler(DatabaseContext context, ISearchObjectQueryBuilder searchObjectQueryBuilder)
+        public EfGenericSearchUseCaseHandler(EntityAccessor accessor, ISearchObjectQueryBuilder searchObjectQueryBuilder) : base(accessor)
         {
-            _context = context;
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
         public override object Handle(TUseCase useCase)
         {
-            var query = _context.Set<TEntity>().AsQueryable();
+            var query = _accessor.GetQuery<TEntity>();
 
             var searchObj = useCase.Data;
 

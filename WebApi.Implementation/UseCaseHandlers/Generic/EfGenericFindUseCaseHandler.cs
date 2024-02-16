@@ -1,27 +1,26 @@
 ﻿using AutoMapper;
 using WebApi.Application.Exceptions;
 using WebApi.Application.UseCases;
-using WebApi.DataAccess;
 using WebApi.DataAccess.Entities.Abstraction;
+using WebApi.Implementation.Core;
+using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericFindUseCaseHandler<TUseCase, TEntity, TOut> : UseCaseHandler<TUseCase, int, TOut>
+    public class EfGenericFindUseCaseHandler<TUseCase, TEntity, TOut> : EfUseCaseHandler<TUseCase, int, TOut>
         where TUseCase : UseCase<int, TOut>
         where TEntity : Entity
     {
-        private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
 
-        public EfGenericFindUseCaseHandler(DatabaseContext context, IMapper mapper)
+        public EfGenericFindUseCaseHandler(EntityAccessor accessor, IMapper mapper) : base(accessor)
         {
-            _context = context;
             _mapper = mapper;
         }
 
         public override TOut Handle(TUseCase useCase)
         {
-            var dataFromDb = _context.Set<TEntity>().Find(useCase.Data);
+            var dataFromDb = _accessor.Find<TEntity>(useCase.Data);
 
             if (dataFromDb is null)
             {
