@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Application.Exceptions;
-using WebApi.Common.DTO.Abstraction;
 using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.Core
@@ -19,14 +18,14 @@ namespace WebApi.Implementation.Core
             return _context.Set<TEntity>().AsQueryable();
         }
 
-        public TEntity Find<TEntity>(int id) where TEntity : class, IIdentifyable
+        public TEntity Find<TEntity>(int id, bool includeInactive = false) where TEntity : Entity
         {
-            return _context.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+            return _context.Set<TEntity>().FirstOrDefault(x => x.Id == id && (includeInactive || x.IsActive.Value));
         }
 
-        public IQueryable<TEntity> FindAll<TEntity>(IEnumerable<int> ids) where TEntity : class, IIdentifyable
+        public IQueryable<TEntity> FindAll<TEntity>(IEnumerable<int> ids, bool includeInactive = false) where TEntity : Entity
         {
-            return _context.Set<TEntity>().Where(x => ids.Contains(x.Id));
+            return _context.Set<TEntity>().Where(x => ids.Contains(x.Id) && (includeInactive || x.IsActive.Value));
         }
 
         public void Add<TEntity>(TEntity entity) where TEntity : class
@@ -39,7 +38,7 @@ namespace WebApi.Implementation.Core
             _context.Set<TEntity>().AddRange(entity);
         }
 
-        public void Delete<TEntity>(int id, bool forceHardDelete = false) where TEntity : class, IIdentifyable
+        public void Delete<TEntity>(int id, bool forceHardDelete = false) where TEntity : Entity
         {
             var entityToDelete = Find<TEntity>(id);
 
@@ -51,7 +50,7 @@ namespace WebApi.Implementation.Core
             Delete(entityToDelete, forceHardDelete);
         }
 
-        public void DeleteBatch<TEntity>(IEnumerable<int> ids, bool forceHardDelete = false) where TEntity : class, IIdentifyable
+        public void DeleteBatch<TEntity>(IEnumerable<int> ids, bool forceHardDelete = false) where TEntity : Entity
         {
             var entitiesToDelete = FindAll<TEntity>(ids);
             DeleteBatch(entitiesToDelete, forceHardDelete);

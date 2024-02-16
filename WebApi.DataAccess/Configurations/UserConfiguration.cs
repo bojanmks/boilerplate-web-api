@@ -3,9 +3,9 @@ using WebApi.DataAccess.Entities;
 
 namespace WebApi.DataAccess.Configurations
 {
-    public class UserConfiguration : SoftDeletableEntityConfiguration<User>
+    public class UserConfiguration : EntityConfiguration<User>
     {
-        protected override void ConfigureSoftDeletableEntity(EntityTypeBuilder<User> builder)
+        protected override void ConfigureEntity(EntityTypeBuilder<User> builder)
         {
             builder.Property(x => x.Email)
                 .IsRequired()

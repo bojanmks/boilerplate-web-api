@@ -11,6 +11,10 @@ namespace WebApi.DataAccess.Configurations
         {
             builder.HasIndex(e => e.Id);
 
+            builder.Property(x => x.IsActive)
+                   .IsRequired()
+                   .HasDefaultValue(true);
+
             ConfigureEntity(builder);
         }
 

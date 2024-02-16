@@ -4,8 +4,10 @@
 
 namespace WebApi.DataAccess.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -35,8 +37,8 @@ namespace WebApi.DataAccess.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,7 +56,8 @@ namespace WebApi.DataAccess.Migrations
                     AccessTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RefreshTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -99,6 +102,7 @@ namespace WebApi.DataAccess.Migrations
                 column: "Id");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
