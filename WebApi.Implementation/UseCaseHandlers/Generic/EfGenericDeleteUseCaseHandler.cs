@@ -1,4 +1,4 @@
-﻿using WebApi.Application.Core;
+﻿using WebApi.Application.EntityDeletion;
 using WebApi.Application.Exceptions;
 using WebApi.Application.UseCases;
 using WebApi.DataAccess;

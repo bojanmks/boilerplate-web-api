@@ -12,7 +12,7 @@ using WebApi.Api.ExceptionHandling;
 using WebApi.Api.ExceptionHandling.Abstraction;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.AppSettings;
-using WebApi.Application.Core;
+using WebApi.Application.EntityDeletion;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
@@ -23,7 +23,7 @@ using WebApi.Application.Validation;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
-using WebApi.Implementation.Core;
+using WebApi.Implementation.EntityDeletion;
 using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
@@ -116,7 +116,7 @@ namespace WebApi.Api.Extensions
                 var options = new DbContextOptionsBuilder<DatabaseContext>()
                                     .EnableSensitiveDataLogging()
                                     .UseLazyLoadingProxies()
-                                    .UseSqlServer(appSettings.ConnectionStrings.Primary, x => x.MigrationsAssembly("WebApi.Api"))
+                                    .UseSqlServer(appSettings.ConnectionStrings.Primary, x => x.MigrationsAssembly(typeof(DatabaseContext).Assembly.GetName().Name))
                                     .UseLazyLoadingProxies()
                                     .Options;
 
@@ -127,10 +127,10 @@ namespace WebApi.Api.Extensions
 
             var config = Configuration.GetConfiguration<AppSettings>();
 
-            services.AddDbContext<DatabaseContext>(x =>
+            services.AddDbContext<DatabaseContext>(options =>
             {
-                x.UseSqlServer(config.ConnectionStrings.Primary, x => x.MigrationsAssembly("WebApi.Api"))
-                .UseLazyLoadingProxies();
+                options.UseSqlServer(config.ConnectionStrings.Primary, x => x.MigrationsAssembly(typeof(DatabaseContext).Assembly.GetName().Name))
+                       .UseLazyLoadingProxies();
             });
         }
 

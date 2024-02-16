@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WebApi.Application.ApplicationUsers;
-using WebApi.Application.Core;
+using WebApi.Application.EntityDeletion;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;

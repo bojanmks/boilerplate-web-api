@@ -1,8 +1,8 @@
-﻿using WebApi.Application.Core;
+﻿using WebApi.Application.EntityDeletion;
 using WebApi.DataAccess;
 using WebApi.DataAccess.Entities.Abstraction;
 
-namespace WebApi.Implementation.Core
+namespace WebApi.Implementation.EntityDeletion
 {
     public class EfEntityDeletionHandler : IEntityDeletionHandler
     {

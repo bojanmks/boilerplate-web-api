@@ -35,5 +35,6 @@ namespace WebApi.DataAccess
         public DbSet<Translation> Translations { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<JwtTokenRecord> JwtTokenRecords { get; set; }
+        public DbSet<TestEntity> Test { get; set; }
     }
 }
