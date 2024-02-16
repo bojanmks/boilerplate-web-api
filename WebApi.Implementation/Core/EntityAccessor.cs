@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using WebApi.Application.Exceptions;
 using WebApi.DataAccess.Entities.Abstraction;
 
@@ -20,12 +21,12 @@ namespace WebApi.Implementation.Core
 
         public TEntity Find<TEntity>(int id, bool includeInactive = false) where TEntity : Entity
         {
-            return _context.Set<TEntity>().FirstOrDefault(x => x.Id == id && (includeInactive || x.IsActive.Value));
+            return GetQuery<TEntity>().FirstOrDefault(x => x.Id == id && (includeInactive || x.IsActive.Value));
         }
 
         public IQueryable<TEntity> FindAll<TEntity>(IEnumerable<int> ids, bool includeInactive = false) where TEntity : Entity
         {
-            return _context.Set<TEntity>().Where(x => ids.Contains(x.Id) && (includeInactive || x.IsActive.Value));
+            return GetQuery<TEntity>().Where(x => ids.Contains(x.Id) && (includeInactive || x.IsActive.Value));
         }
 
         public void Add<TEntity>(TEntity entity) where TEntity : class
@@ -75,6 +76,16 @@ namespace WebApi.Implementation.Core
             {
                 Delete(entity, forceHardDelete);
             }
+        }
+
+        public bool Exists<TEntity>(int id) where TEntity : Entity
+        {
+            return GetQuery<TEntity>().Any(x => x.Id == id);
+        }
+
+        public bool Exists<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
+        {
+            return GetQuery<TEntity>().Any(expression);
         }
 
         public void SaveChanges()
