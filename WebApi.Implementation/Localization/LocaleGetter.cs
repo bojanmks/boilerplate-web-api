@@ -28,7 +28,7 @@ namespace WebApi.Implementation.Localization
             var request = _accessor.HttpContext.Request;
             var localeCode = request.Headers["Accept-Language"];
 
-            if (LocaleRepository.SupportedLocales.Contains(localeCode))
+            if (LocaleConstants.SupportedLocales.Contains(localeCode))
             {
                 return new CultureInfo(localeCode);
             }
@@ -36,6 +36,6 @@ namespace WebApi.Implementation.Localization
             return DefaultLocale;
         }
 
-        public CultureInfo DefaultLocale => new CultureInfo(LocaleRepository.DefaultLocale);
+        public CultureInfo DefaultLocale => new CultureInfo(LocaleConstants.DefaultLocale);
     }
 }
