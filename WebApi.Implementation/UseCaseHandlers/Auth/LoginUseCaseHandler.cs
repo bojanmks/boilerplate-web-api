@@ -32,6 +32,8 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             var tokens = _jwtTokenStorage.CreateRecord(user);
 
+            _jwtTokenStorage.DeleteExcessTokens(user.Id);
+
             return tokens;
         }
     }
