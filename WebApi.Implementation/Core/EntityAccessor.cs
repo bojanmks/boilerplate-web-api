@@ -14,19 +14,36 @@ namespace WebApi.Implementation.Core
             _context = context;
         }
 
-        public IQueryable<TEntity> GetQuery<TEntity>() where TEntity : class
+        public IQueryable<TEntity> GetQuery<TEntity>(bool includeInactive = false) where TEntity : Entity
         {
-            return _context.Set<TEntity>().AsQueryable();
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            if (!includeInactive)
+            {
+                query = query.Where(x => x.IsActive.Value);
+            }
+
+            return query;
         }
 
         public TEntity Find<TEntity>(int id, bool includeInactive = false) where TEntity : Entity
         {
-            return GetQuery<TEntity>().FirstOrDefault(x => x.Id == id && (includeInactive || x.IsActive.Value));
+            return Find<TEntity>(x => x.Id == id, includeInactive);
+        }
+
+        public TEntity Find<TEntity>(Expression<Func<TEntity, bool>> expression, bool includeInactive = false) where TEntity : Entity
+        {
+            return GetQuery<TEntity>(includeInactive).FirstOrDefault(expression);
         }
 
         public IQueryable<TEntity> FindAll<TEntity>(IEnumerable<int> ids, bool includeInactive = false) where TEntity : Entity
         {
-            return GetQuery<TEntity>().Where(x => ids.Contains(x.Id) && (includeInactive || x.IsActive.Value));
+            return FindAll<TEntity>(x => ids.Contains(x.Id), includeInactive);
+        }
+
+        public IQueryable<TEntity> FindAll<TEntity>(Expression<Func<TEntity, bool>> expression, bool includeInactive = false) where TEntity : Entity
+        {
+            return GetQuery<TEntity>(includeInactive).Where(expression);
         }
 
         public void Add<TEntity>(TEntity entity) where TEntity : class
@@ -78,14 +95,14 @@ namespace WebApi.Implementation.Core
             }
         }
 
-        public bool Exists<TEntity>(int id) where TEntity : Entity
+        public bool Exists<TEntity>(int id, bool includeInactive = false) where TEntity : Entity
         {
-            return GetQuery<TEntity>().Any(x => x.Id == id);
+            return GetQuery<TEntity>(includeInactive).Any(x => x.Id == id);
         }
 
-        public bool Exists<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
+        public bool Exists<TEntity>(Expression<Func<TEntity, bool>> expression, bool includeInactive = false) where TEntity : Entity
         {
-            return GetQuery<TEntity>().Any(expression);
+            return GetQuery<TEntity>(includeInactive).Any(expression);
         }
 
         public void SaveChanges()

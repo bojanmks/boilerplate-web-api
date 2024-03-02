@@ -8,12 +8,9 @@ namespace WebApi.Implementation.Validators.Auth
 {
     public class RefreshTokenValidator : TranslatableFormattedValidator<RefreshTokenUseCase>
     {
-        public RefreshTokenValidator(ITranslator translator, IJwtTokenStorage jwtStorage, IJwtTokenValidator jwtValidator) : base(translator)
+        public RefreshTokenValidator(ITranslator translator, IJwtTokenValidator jwtValidator) : base(translator)
         {
             RuleFor(x => x.Data.RefreshToken)
-                .Cascade(CascadeMode.Stop)
-                .Must(refreshToken => jwtStorage.FindByRefreshToken(refreshToken) is not null)
-                .WithState(x => new UnauthorizedAccessException())
                 .Must(refreshToken => jwtValidator.IsValid(refreshToken))
                 .WithState(x => new UnauthorizedAccessException());
         }

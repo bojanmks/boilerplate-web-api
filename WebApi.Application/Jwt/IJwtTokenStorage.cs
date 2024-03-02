@@ -5,7 +5,9 @@ namespace WebApi.Application.Jwt
 {
     public interface IJwtTokenStorage
     {
-        public JwtTokenRecord FindByRefreshToken(string token);
-        public Tokens CreateRecord(User user);
+        JwtTokenRecordDto FindByRefreshToken(string token);
+        Tokens CreateRecord(User user);
+        void Delete(int id);
+        void DeleteExcessTokens(int userId);
     }
 }

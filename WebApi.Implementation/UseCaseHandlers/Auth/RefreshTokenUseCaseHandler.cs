@@ -20,6 +20,11 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
         {
             var tokenRecord = _jwtTokenStorage.FindByRefreshToken(useCase.Data.RefreshToken);
 
+            if (tokenRecord is null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             var user = _accessor.Find<User>(tokenRecord.UserId);
 
             if (user is null)
@@ -29,8 +34,8 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             var tokens = _jwtTokenStorage.CreateRecord(user);
 
-            _accessor.Delete(tokenRecord);
-            _accessor.SaveChanges();
+            _jwtTokenStorage.Delete(tokenRecord.Id);
+            _jwtTokenStorage.DeleteExcessTokens(user.Id);
 
             return tokens;
         }

@@ -104,7 +104,7 @@ namespace WebApi.Api.Extensions
             services.AddTransient<ClaimsGenerator>();
             services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
-            services.AddTransient<IJwtTokenStorage, JwtTokenStorage>();
+            services.AddTransient<IJwtTokenStorage, EfJwtTokenStorage>();
             services.AddTransient<ISearchObjectQueryBuilder, EfSearchObjectQueryBuilder>();
         }
 
