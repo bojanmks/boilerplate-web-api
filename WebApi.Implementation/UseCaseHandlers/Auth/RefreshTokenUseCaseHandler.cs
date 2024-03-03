@@ -3,6 +3,7 @@ using WebApi.Application.UseCases.Auth;
 using WebApi.Common.DTO;
 using WebApi.DataAccess.Entities;
 using WebApi.Implementation.Core;
+using WebApi.Implementation.Exceptions;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Auth
@@ -22,14 +23,14 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             if (tokenRecord is null)
             {
-                throw new UnauthorizedAccessException();
+                throw new ClientSideErrorException();
             }
 
             var user = _accessor.Find<User>(tokenRecord.UserId);
 
             if (user is null)
             {
-                throw new UnauthorizedAccessException();
+                throw new ClientSideErrorException();
             }
 
             var tokens = _jwtTokenStorage.CreateRecord(user);

@@ -3,13 +3,13 @@ using WebApi.Implementation.Exceptions;
 
 namespace WebApi.Api.ExceptionHandling.ResponseGenerators
 {
-    public class TranslatableUnauthorizedAccessExceptionResponseGenerator : ExceptionResponseGenerator<TranslatableUnauthorizedAccessException>
+    public class ClientSideErrorExceptionResponseGenerator : ExceptionResponseGenerator<ClientSideErrorException>
     {
-        protected override ExceptionResponse GenerateAfterCast(TranslatableUnauthorizedAccessException ex)
+        protected override ExceptionResponse GenerateAfterCast(ClientSideErrorException ex)
         {
             return new ExceptionResponse
             {
-                StatusCode = StatusCodes.Status401Unauthorized,
+                StatusCode = StatusCodes.Status409Conflict,
                 Response = new
                 {
                     message = ex.Message

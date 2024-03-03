@@ -2,6 +2,7 @@
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.UseCases.Auth;
+using WebApi.Implementation.Exceptions;
 using WebApi.Implementation.Validators.Abstraction;
 
 namespace WebApi.Implementation.Validators.Auth
@@ -12,7 +13,7 @@ namespace WebApi.Implementation.Validators.Auth
         {
             RuleFor(x => x.Data.RefreshToken)
                 .Must(refreshToken => jwtValidator.IsValid(refreshToken))
-                .WithState(x => new UnauthorizedAccessException());
+                .WithState(x => new ClientSideErrorException());
         }
     }
 }

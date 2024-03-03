@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Application.UseCases.Users;
 using WebApi.Common.DTO;
 using WebApi.DataAccess.Entities;
@@ -9,6 +10,7 @@ namespace WebApi.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly UseCaseMediator _mediator;

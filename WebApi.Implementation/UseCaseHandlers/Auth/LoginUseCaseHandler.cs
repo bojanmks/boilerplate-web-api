@@ -27,7 +27,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             if (user is null || !user.IsPasswordCorrect(useCase.Data.Password))
             {
-                throw new TranslatableUnauthorizedAccessException(_translator, "invalidCredentials");
+                throw new ClientSideErrorException(_translator, "invalidCredentials");
             }
 
             var tokens = _jwtTokenStorage.CreateRecord(user);
