@@ -1,6 +1,6 @@
 ﻿using WebApi.Application.UseCases;
 using WebApi.Application.UseCases.Auth;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Auth;
 
 namespace WebApi.Implementation.UseCaseSubscribers
 {

@@ -1,7 +1,12 @@
 ﻿namespace WebApi.Application.UseCases
 {
-    public interface IUseCase
+    public interface IUseCase<TData, TOut> : IUseCaseBase
     {
-        public string Id { get; }
+        TData Data { get; }
+    }
+
+    public interface IUseCaseBase
+    {
+        string Id { get; }
     }
 }

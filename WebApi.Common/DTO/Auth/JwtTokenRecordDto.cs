@@ -1,6 +1,4 @@
-﻿using WebApi.Common.DTO.Abstraction;
-
-namespace WebApi.Common.DTO
+﻿namespace WebApi.Common.DTO.Auth
 {
     public class JwtTokenRecordDto : IdentifyableDto
     {

@@ -1,4 +1,4 @@
-﻿using WebApi.Common.DTO;
+﻿using WebApi.Common.DTO.Auth;
 using WebApi.DataAccess.Entities;
 
 namespace WebApi.Application.Jwt

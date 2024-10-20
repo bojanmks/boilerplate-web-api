@@ -17,12 +17,12 @@ using WebApi.Application.Localization;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;
-using WebApi.Application.UseCases.Attributes;
 using WebApi.Application.Validation;
 using WebApi.Common.Enums;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
 using WebApi.Implementation.Core;
+using WebApi.Implementation.Extensions;
 using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
 using WebApi.Implementation.Logging;
@@ -228,13 +228,13 @@ namespace WebApi.Api.Extensions
 
         private static void AddUseCaseValidators(this IServiceCollection services)
         {
-            services.AddImplementationsByBaseType<IValidator>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
+            services.AddImplementationsByBaseType<IValidator>([typeof(UserRoleUseCaseMapStore).Assembly]);
             services.AddTransient<IValidatorGetter, ServiceProviderValidatorGetter>();
         }
 
         private static void AddUseCaseHandlers(this IServiceCollection services)
         {
-            services.AddImplementationsByBaseType<IUseCaseHandler>(new Assembly[] { typeof(UserRoleUseCaseMapStore).Assembly });
+            services.AddImplementationsByBaseType<IUseCaseHandler>([typeof(UserRoleUseCaseMapStore).Assembly]);
             services.AddTransient<IUseCaseHandlerGetter, ServiceProviderUseCaseHandlerGetter>();
         }
 
@@ -267,7 +267,7 @@ namespace WebApi.Api.Extensions
                 useCasesMap.Add(role, new List<string>());
             }
 
-            var useCaseTypes = typeof(UseCase<,>).Assembly.GetImplementationsOfType<IUseCase>();
+            var useCaseTypes = typeof(UseCase<,>).Assembly.GetImplementationsOfGenericType(typeof(IUseCase<,>));
 
             foreach (var useCaseType in useCaseTypes)
             {
@@ -281,7 +281,7 @@ namespace WebApi.Api.Extensions
                 var constructorParameters = useCaseType.GetConstructors().OrderBy(x => x.GetParameters().Count()).FirstOrDefault()?.GetParameters();
                 var constructorParametersDefaultValues = constructorParameters?.Select(x => x.GetType().GetDefault()).ToArray();
 
-                var useCaseInstance = (IUseCase?)Activator.CreateInstance(useCaseType, constructorParametersDefaultValues);
+                var useCaseInstance = (IUseCaseBase?)Activator.CreateInstance(useCaseType, constructorParametersDefaultValues);
 
                 if (useCaseInstance is null)
                 {

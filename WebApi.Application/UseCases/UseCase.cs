@@ -1,6 +1,6 @@
 ﻿namespace WebApi.Application.UseCases
 {
-    public abstract class UseCase<TData, TOut> : IUseCase
+    public abstract class UseCase<TData, TOut> : IUseCase<TData, TOut>
     {
         public TData Data { get; }
 

@@ -1,4 +1,4 @@
-﻿using WebApi.Common.DTO.Abstraction;
+﻿using WebApi.Common;
 
 namespace WebApi.DataAccess.Entities.Abstraction
 {

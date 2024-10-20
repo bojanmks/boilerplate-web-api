@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using WebApi.Application.AppSettings;
 using WebApi.Application.Jwt;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Auth;
+using WebApi.Common.DTO.Users;
 using WebApi.DataAccess.Entities;
 using WebApi.Implementation.Core;
 

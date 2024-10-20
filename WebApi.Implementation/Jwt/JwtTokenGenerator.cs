@@ -4,7 +4,8 @@ using System.Security.Claims;
 using System.Text;
 using WebApi.Application.AppSettings;
 using WebApi.Application.Jwt;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Auth;
+using WebApi.Common.DTO.Users;
 
 namespace WebApi.Implementation.Jwt
 {

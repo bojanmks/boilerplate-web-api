@@ -1,4 +1,4 @@
-﻿namespace WebApi.Common.DTO
+﻿namespace WebApi.Common.DTO.Reflection
 {
     public class TypeData
     {

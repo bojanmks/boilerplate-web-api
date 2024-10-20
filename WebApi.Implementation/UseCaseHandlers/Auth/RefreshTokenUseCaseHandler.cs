@@ -1,6 +1,6 @@
 ﻿using WebApi.Application.Jwt;
 using WebApi.Application.UseCases.Auth;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Auth;
 using WebApi.DataAccess.Entities;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.Exceptions;

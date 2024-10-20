@@ -1,5 +1,4 @@
-﻿using WebApi.Application.UseCases.Attributes;
-using WebApi.Common.DTO;
+﻿using WebApi.Common.DTO.Auth;
 using WebApi.Common.Enums;
 
 namespace WebApi.Application.UseCases.Auth

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Application.UseCases.Auth;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Auth;
 using WebApi.Implementation.UseCases;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

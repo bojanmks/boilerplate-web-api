@@ -1,7 +1,6 @@
-﻿using WebApi.Common.DTO.Abstraction;
-using WebApi.Common.Enums;
+﻿using WebApi.Common.Enums;
 
-namespace WebApi.Common.DTO
+namespace WebApi.Common.DTO.Users
 {
     public class UserDto : IdentifyableDto
     {

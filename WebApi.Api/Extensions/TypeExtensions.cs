@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Reflection;
 
 namespace WebApi.Api.Extensions
 {

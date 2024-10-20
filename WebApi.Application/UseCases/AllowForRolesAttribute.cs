@@ -1,6 +1,6 @@
 ﻿using WebApi.Common.Enums;
 
-namespace WebApi.Application.UseCases.Attributes
+namespace WebApi.Application.UseCases
 {
     public class AllowForRolesAttribute : Attribute
     {

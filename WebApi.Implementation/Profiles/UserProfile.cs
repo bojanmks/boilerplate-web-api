@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Users;
 using WebApi.DataAccess.Entities;
 
 namespace WebApi.Implementation.Profiles

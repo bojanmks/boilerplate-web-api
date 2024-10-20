@@ -1,5 +1,4 @@
 ﻿using WebApi.Application.Search;
-using WebApi.Application.UseCases.Attributes;
 using WebApi.Common.Enums;
 
 namespace WebApi.Application.UseCases.Users

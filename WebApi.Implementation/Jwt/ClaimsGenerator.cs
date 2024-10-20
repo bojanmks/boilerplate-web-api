@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WebApi.Application.AppSettings;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Users;
 
 namespace WebApi.Implementation.Jwt
 {

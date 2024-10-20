@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Application.UseCases.Users;
-using WebApi.Common.DTO;
+using WebApi.Common.DTO.Users;
 using WebApi.DataAccess.Entities;
 using WebApi.Implementation.Search.SearchObjects;
 using WebApi.Implementation.UseCases;

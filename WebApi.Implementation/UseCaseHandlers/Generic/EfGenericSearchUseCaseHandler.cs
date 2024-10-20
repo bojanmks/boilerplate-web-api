@@ -1,6 +1,6 @@
 ﻿using WebApi.Application.Search;
 using WebApi.Application.UseCases;
-using WebApi.Common.DTO.Abstraction;
+using WebApi.Common;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;

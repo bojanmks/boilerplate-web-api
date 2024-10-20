@@ -1,4 +1,4 @@
-﻿namespace WebApi.Common.DTO.Abstraction
+﻿namespace WebApi.Common
 {
     public interface IIdentifyable
     {
