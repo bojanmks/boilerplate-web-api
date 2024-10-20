@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using WebApi.Application.Localization;
 
-namespace WebApi.Implementation.Validators.Abstraction
+namespace WebApi.Implementation.Validators
 {
     public abstract class TranslatableFormattedValidator<TUseCase> : AbstractValidator<TUseCase>
     {
@@ -20,7 +20,7 @@ namespace WebApi.Implementation.Validators.Abstraction
         protected string TranslateAndFormat(string messageKey, params object[] values)
         {
             var translatedMessage = Translate(messageKey);
-            var formattedMessage = String.Format(translatedMessage, values);
+            var formattedMessage = string.Format(translatedMessage, values);
 
             return formattedMessage;
         }

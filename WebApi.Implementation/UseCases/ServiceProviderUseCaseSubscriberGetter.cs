@@ -18,10 +18,10 @@ namespace WebApi.Implementation.UseCases
 
             if (subscribers is null)
             {
-                return null;
+                return Enumerable.Empty<IUseCaseSubscriber<TUseCase, TData, TOut>>();
             }
 
-            return subscribers.OrderBy(x => x.Order);
+            return subscribers;
         }
     }
 }

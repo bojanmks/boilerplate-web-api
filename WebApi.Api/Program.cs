@@ -17,14 +17,9 @@ app.UseRouting();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapFastEndpoints();
-});
+app.UseFastEndpoints();
 
 app.Run();

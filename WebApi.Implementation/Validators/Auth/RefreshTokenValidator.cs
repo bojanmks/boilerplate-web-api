@@ -3,7 +3,6 @@ using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.UseCases.Auth;
 using WebApi.Implementation.Exceptions;
-using WebApi.Implementation.Validators.Abstraction;
 
 namespace WebApi.Implementation.Validators.Auth
 {
