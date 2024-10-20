@@ -4,16 +4,16 @@ using WebApi.Application.Validation;
 
 namespace WebApi.Implementation.Validators
 {
-    public class ServiceProviderValidatorGetter : IValidatorGetter
+    public class ServiceProviderValidatorResolver : IValidatorResolver
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public ServiceProviderValidatorGetter(IServiceProvider serviceProvider)
+        public ServiceProviderValidatorResolver(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public AbstractValidator<T> GetValidator<T>()
+        public AbstractValidator<T> Resolve<T>()
         {
             return _serviceProvider.GetService<AbstractValidator<T>>();
         }

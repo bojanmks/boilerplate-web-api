@@ -229,13 +229,13 @@ namespace WebApi.Api.Extensions
         private static void AddUseCaseValidators(this IServiceCollection services)
         {
             services.AddImplementationsByBaseType<IValidator>([typeof(UserRoleUseCaseMapStore).Assembly]);
-            services.AddTransient<IValidatorGetter, ServiceProviderValidatorGetter>();
+            services.AddTransient<IValidatorResolver, ServiceProviderValidatorResolver>();
         }
 
         private static void AddUseCaseHandlers(this IServiceCollection services)
         {
-            services.AddImplementationsByBaseType<IUseCaseHandler>([typeof(UserRoleUseCaseMapStore).Assembly]);
-            services.AddTransient<IUseCaseHandlerGetter, ServiceProviderUseCaseHandlerGetter>();
+            services.AddImplementationsByBaseType<IUseCaseHandlerBase>([typeof(UserRoleUseCaseMapStore).Assembly]);
+            services.AddTransient<IUseCaseHandlerResolver, ServiceProviderUseCaseHandlerResolver>();
         }
 
         private static void AddUseCaseSubscribers(this IServiceCollection services)
@@ -255,7 +255,7 @@ namespace WebApi.Api.Extensions
                 }
             }
 
-            services.AddTransient<IUseCaseSubscriberGetter, ServiceProviderUseCaseSubscriberGetter>();
+            services.AddTransient<IUseCaseSubscriberResolver, ServiceProviderUseCaseSubscriberResolver>();
         }
 
         private static void AddUserRoleUseCaseMapStore(this IServiceCollection services)

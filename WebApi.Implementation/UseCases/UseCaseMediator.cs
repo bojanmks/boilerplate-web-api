@@ -18,27 +18,27 @@ namespace WebApi.Implementation.UseCases
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
         private readonly IUseCaseLogger _useCaseLogger;
-        private readonly IUseCaseSubscriberGetter _subscriberGetter;
-        private readonly IValidatorGetter _validatorGetter;
-        private readonly IUseCaseHandlerGetter _useCaseHandlerGetter;
+        private readonly IUseCaseSubscriberResolver _subscriberResolver;
+        private readonly IValidatorResolver _validatorResolver;
+        private readonly IUseCaseHandlerResolver _useCaseHandlerResolver;
         private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
 
         public UseCaseMediator(EntityAccessor accessor,
                                IMapper mapper,
                                IApplicationUser applicationUser,
                                IUseCaseLogger useCaseLogger,
-                               IUseCaseSubscriberGetter subscriberGetter,
-                               IValidatorGetter validatorGetter,
-                               IUseCaseHandlerGetter useCaseHandlerGetter,
+                               IUseCaseSubscriberResolver subscriberResolver,
+                               IValidatorResolver validatorResolver,
+                               IUseCaseHandlerResolver useCaseHandlerResolver,
                                ISearchObjectQueryBuilder searchObjectQueryBuilder)
         {
             _accessor = accessor;
             _mapper = mapper;
             _applicationUser = applicationUser;
             _useCaseLogger = useCaseLogger;
-            _subscriberGetter = subscriberGetter;
-            _validatorGetter = validatorGetter;
-            _useCaseHandlerGetter = useCaseHandlerGetter;
+            _subscriberResolver = subscriberResolver;
+            _validatorResolver = validatorResolver;
+            _useCaseHandlerResolver = useCaseHandlerResolver;
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
@@ -97,7 +97,7 @@ namespace WebApi.Implementation.UseCases
         public Task<TOut> Execute<TUseCase, TData, TOut>(TUseCase useCase)
             where TUseCase : UseCase<TData, TOut>
         {
-            var handler = _useCaseHandlerGetter.GetHandler<TUseCase, TData, TOut>();
+            var handler = _useCaseHandlerResolver.Resolve<TUseCase, TData, TOut>();
 
             if (handler is null)
             {
@@ -111,7 +111,7 @@ namespace WebApi.Implementation.UseCases
 
         private UseCaseExecutor<TUseCase, TData, TOut> ConstructExecutor<TUseCase, TData, TOut>() where TUseCase : UseCase<TData, TOut>
         {
-            return new UseCaseExecutor<TUseCase, TData, TOut>(_applicationUser, _useCaseLogger, _subscriberGetter, _validatorGetter);
+            return new UseCaseExecutor<TUseCase, TData, TOut>(_applicationUser, _useCaseLogger, _subscriberResolver, _validatorResolver);
         }
     }
 }

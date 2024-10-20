@@ -13,10 +13,10 @@ namespace WebApi.Implementation.UseCases
     {
         private readonly IApplicationUser _applicationUser;
         private readonly IUseCaseLogger _useCaseLogger;
-        private readonly IUseCaseSubscriberGetter _subscriberGetter;
-        private readonly IValidatorGetter _validatorGetter;
+        private readonly IUseCaseSubscriberResolver _subscriberGetter;
+        private readonly IValidatorResolver _validatorGetter;
 
-        public UseCaseExecutor(IApplicationUser applicationUser, IUseCaseLogger useCaseLogger, IUseCaseSubscriberGetter subscriberGetter, IValidatorGetter validatorGetter)
+        public UseCaseExecutor(IApplicationUser applicationUser, IUseCaseLogger useCaseLogger, IUseCaseSubscriberResolver subscriberGetter, IValidatorResolver validatorGetter)
         {
             _applicationUser = applicationUser;
             _useCaseLogger = useCaseLogger;
@@ -55,7 +55,7 @@ namespace WebApi.Implementation.UseCases
                 throw new ForbiddenUseCaseException(useCase.Id, _applicationUser.Id.ToString());
             }
 
-            var validator = _validatorGetter.GetValidator<TUseCase>();
+            var validator = _validatorGetter.Resolve<TUseCase>();
 
             if (validator is not null)
             {
@@ -65,7 +65,7 @@ namespace WebApi.Implementation.UseCases
 
         private async Task ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
         {
-            var subscribers = _subscriberGetter.GetSubscribers<TUseCase, TData, TOut>();
+            var subscribers = _subscriberGetter.ResolveAll<TUseCase, TData, TOut>();
 
             if (subscribers is null)
             {

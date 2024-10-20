@@ -3,16 +3,16 @@ using WebApi.Application.UseCases;
 
 namespace WebApi.Implementation.UseCases
 {
-    public class ServiceProviderUseCaseHandlerGetter : IUseCaseHandlerGetter
+    public class ServiceProviderUseCaseHandlerResolver : IUseCaseHandlerResolver
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public ServiceProviderUseCaseHandlerGetter(IServiceProvider serviceProvider)
+        public ServiceProviderUseCaseHandlerResolver(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public UseCaseHandler<TUseCase, TData, TOut> GetHandler<TUseCase, TData, TOut>() where TUseCase : UseCase<TData, TOut>
+        public UseCaseHandler<TUseCase, TData, TOut> Resolve<TUseCase, TData, TOut>() where TUseCase : UseCase<TData, TOut>
         {
             return _serviceProvider.GetService<UseCaseHandler<TUseCase, TData, TOut>>();
         }
