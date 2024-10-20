@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Application.Exceptions;
 using WebApi.Application.Localization;
 using WebApi.Application.Search;
@@ -19,14 +20,12 @@ namespace WebApi.Implementation.Search
             _translator = translator;
         }
 
-        public object BuildDynamicQuery<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
+        public Task<object> BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             query = BuildQuery(search, query);
             query = BuildOrderBy(search, query);
 
-            var response = BuildResponse<TEntity, TOut>(search, query);
-
-            return response;
+            return ExecuteSearchAsync<TEntity, TOut>(search, query, cancellationToken);
         }
 
         public IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
@@ -114,20 +113,22 @@ namespace WebApi.Implementation.Search
             return _mapper.Map<IEnumerable<TOut>>(query.ToList());
         }
 
-        public object BuildResponse<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
+        public async Task<object> ExecuteSearchAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             if (search.Paginate)
             {
+                var items = await query.Skip((search.Page - 1) * search.PerPage).Take(search.PerPage).ToListAsync(cancellationToken);
+
                 return new PagedResponse<TOut>
                 {
                     Page = search.Page,
                     PerPage = search.PerPage,
                     TotalCount = query.Count(),
-                    Items = _mapper.Map<IEnumerable<TOut>>(query.Skip((search.Page - 1) * search.PerPage).Take(search.PerPage).ToList())
+                    Items = _mapper.Map<IEnumerable<TOut>>(items)
                 };
             }
 
-            return _mapper.Map<IEnumerable<TOut>>(query.ToList());
+            return _mapper.Map<IEnumerable<TOut>>(await query.ToListAsync(cancellationToken));
         }
     }
 }

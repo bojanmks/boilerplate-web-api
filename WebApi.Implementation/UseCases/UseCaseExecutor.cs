@@ -24,18 +24,18 @@ namespace WebApi.Implementation.UseCases
             _validatorGetter = validatorGetter;
         }
 
-        public TOut Execute(TUseCase useCase, UseCaseHandler<TUseCase, TData, TOut> handler)
+        public async Task<TOut> Execute(TUseCase useCase, UseCaseHandler<TUseCase, TData, TOut> handler)
         {
-            ValidateAndLog(useCase);
+            await ValidateAndLog(useCase);
 
-            var response = handler.Handle(useCase);
+            var response = await handler.HandleAsync(useCase);
 
-            ExecuteUseCaseSubscribers(useCase, response);
+            await ExecuteUseCaseSubscribers(useCase, response);
 
             return response;
         }
 
-        private void ValidateAndLog(TUseCase useCase)
+        private async Task ValidateAndLog(TUseCase useCase)
         {
             var isAuthorized = _applicationUser.AllowedUseCases.Contains(useCase.Id);
 
@@ -48,7 +48,7 @@ namespace WebApi.Implementation.UseCases
                 Data = JsonConvert.SerializeObject(useCase.Data)
             };
 
-            _useCaseLogger.Log(log);
+            await _useCaseLogger.Log(log);
 
             if (!isAuthorized)
             {
@@ -59,11 +59,11 @@ namespace WebApi.Implementation.UseCases
 
             if (validator is not null)
             {
-                validator.ValidateAndThrow(useCase);
+                await validator.ValidateAndThrowAsync(useCase);
             }
         }
 
-        private void ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
+        private async Task ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
         {
             var subscribers = _subscriberGetter.GetSubscribers<TUseCase, TData, TOut>();
 
@@ -80,7 +80,7 @@ namespace WebApi.Implementation.UseCases
 
             foreach (var subscriber in subscribers)
             {
-                subscriber.OnUseCaseExecuted(subscriberData);
+                await subscriber.OnUseCaseExecuted(subscriberData);
             }
         }
     }

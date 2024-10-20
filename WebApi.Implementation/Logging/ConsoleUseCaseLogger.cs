@@ -5,9 +5,10 @@ namespace WebApi.Implementation.Logging
 {
     public class ConsoleUseCaseLogger : IUseCaseLogger
     {
-        public void Log(UseCaseLoggerData data)
+        public Task Log(UseCaseLoggerData data)
         {
             Console.WriteLine(data);
+            return Task.CompletedTask;
         }
     }
 }

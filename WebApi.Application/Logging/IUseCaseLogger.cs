@@ -4,6 +4,6 @@ namespace WebApi.Application.Logging
 {
     public interface IUseCaseLogger
     {
-        void Log(UseCaseLoggerData data);
+        Task Log(UseCaseLoggerData data);
     }
 }

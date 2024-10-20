@@ -17,6 +17,7 @@ public class RefreshToken(
 
     public override async Task HandleAsync(Tokens req, CancellationToken ct)
     {
-        await SendAsync(_mediator.Execute<RefreshTokenUseCase, Tokens, Tokens>(new RefreshTokenUseCase(req)), cancellation: ct);
+        var result = await _mediator.Execute<RefreshTokenUseCase, Tokens, Tokens>(new RefreshTokenUseCase(req));
+        await SendAsync(result, cancellation: ct);
     }
 }

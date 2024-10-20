@@ -19,13 +19,13 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
-        public override object Handle(TUseCase useCase)
+        public override Task<object> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             var query = _accessor.GetQuery<TEntity>();
 
             var searchObj = useCase.Data;
 
-            return _searchObjectQueryBuilder.BuildDynamicQuery<TEntity, TOut>(searchObj, query);
+            return _searchObjectQueryBuilder.BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(searchObj, query);
         }
     }
 }

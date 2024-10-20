@@ -17,6 +17,7 @@ public class Login(
 
     public override async Task HandleAsync(LoginData req, CancellationToken ct)
     {
-        await SendAsync(_mediator.Execute<LoginUseCase, LoginData, Tokens>(new LoginUseCase(req)), cancellation: ct);
+        var result = await _mediator.Execute<LoginUseCase, LoginData, Tokens>(new LoginUseCase(req));
+        await SendAsync(result, cancellation: ct);
     }
 }

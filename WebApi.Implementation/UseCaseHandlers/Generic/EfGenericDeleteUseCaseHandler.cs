@@ -13,10 +13,10 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
         {
         }
 
-        public override Empty Handle(TUseCase useCase)
+        public override async Task<Empty> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
-            _accessor.Delete<TEntity>(useCase.Data);
-            _accessor.SaveChanges();
+            await _accessor.DeleteByIdAsync<TEntity>(useCase.Data, cancellationToken: cancellationToken);
+            await _accessor.SaveChangesAsync(cancellationToken);
 
             return Empty.Value;
         }

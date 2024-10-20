@@ -18,9 +18,9 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _mapper = mapper;
         }
 
-        public override TOut Handle(TUseCase useCase)
+        public override async Task<TOut> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
-            var dataFromDb = _accessor.Find<TEntity>(useCase.Data);
+            var dataFromDb = await _accessor.FindByIdAsync<TEntity>(useCase.Data, cancellationToken: cancellationToken);
 
             if (dataFromDb is null)
             {

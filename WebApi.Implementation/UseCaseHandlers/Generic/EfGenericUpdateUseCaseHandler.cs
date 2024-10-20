@@ -20,9 +20,9 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _mapper = mapper;
         }
 
-        public override Empty Handle(TUseCase useCase)
+        public override async Task<Empty> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
-            var dataFromDb = _accessor.Find<TEntity>(useCase.Data.Id);
+            var dataFromDb = await _accessor.FindByIdAsync<TEntity>(useCase.Data.Id, cancellationToken: cancellationToken);
 
             if (dataFromDb is null)
             {
@@ -31,7 +31,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             _mapper.Map(useCase.Data, dataFromDb);
 
-            _accessor.SaveChanges();
+            await _accessor.SaveChangesAsync(cancellationToken);
 
             return Empty.Value;
         }

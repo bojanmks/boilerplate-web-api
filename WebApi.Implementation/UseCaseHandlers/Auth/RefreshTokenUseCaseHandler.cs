@@ -17,25 +17,25 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
             _jwtTokenStorage = jwtTokenStorage;
         }
 
-        public override Tokens Handle(RefreshTokenUseCase useCase)
+        public override async Task<Tokens> HandleAsync(RefreshTokenUseCase useCase, CancellationToken cancellationToken = default)
         {
-            var tokenRecord = _jwtTokenStorage.FindByRefreshToken(useCase.Data.RefreshToken);
+            var tokenRecord = await _jwtTokenStorage.FindByRefreshTokenAsync(useCase.Data.RefreshToken, cancellationToken);
 
             if (tokenRecord is null)
             {
                 throw new ClientSideErrorException();
             }
 
-            var user = _accessor.Find<User>(tokenRecord.UserId);
+            var user = await _accessor.FindByIdAsync<User>(tokenRecord.UserId);
 
             if (user is null)
             {
                 throw new ClientSideErrorException();
             }
 
-            var tokens = _jwtTokenStorage.CreateRecord(user);
+            var tokens = await _jwtTokenStorage.CreateRecordAsync(user, cancellationToken);
 
-            _jwtTokenStorage.Delete(tokenRecord.Id);
+            await _jwtTokenStorage.DeleteAsync(tokenRecord.Id, cancellationToken);
 
             return tokens;
         }

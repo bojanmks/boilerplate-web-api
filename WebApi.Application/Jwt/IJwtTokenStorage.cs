@@ -5,9 +5,9 @@ namespace WebApi.Application.Jwt
 {
     public interface IJwtTokenStorage
     {
-        JwtTokenRecordDto FindByRefreshToken(string token);
-        Tokens CreateRecord(User user);
-        void Delete(int id);
-        void DeleteExcessTokens(int userId);
+        Task<JwtTokenRecordDto> FindByRefreshTokenAsync(string token, CancellationToken cancellationToken = default);
+        Task<Tokens> CreateRecordAsync(User user, CancellationToken cancellationToken = default);
+        Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+        Task DeleteExcessTokensAsync(int userId, CancellationToken cancellationToken = default);
     }
 }

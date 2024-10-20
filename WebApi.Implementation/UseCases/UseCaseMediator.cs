@@ -42,7 +42,7 @@ namespace WebApi.Implementation.UseCases
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
-        public object Search<TUseCase, TEntity, TOut>(TUseCase useCase)
+        public Task<object> Search<TUseCase, TEntity, TOut>(TUseCase useCase)
             where TUseCase : UseCase<ISearchObject, object>
             where TOut : IIdentifyable
             where TEntity : Entity
@@ -53,7 +53,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public TOut Find<TUseCase, TEntity, TOut>(TUseCase useCase)
+        public Task<TOut> Find<TUseCase, TEntity, TOut>(TUseCase useCase)
             where TUseCase : UseCase<int, TOut>
             where TEntity : Entity
         {
@@ -63,7 +63,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Empty Insert<TUseCase, TData, TEntity>(TUseCase useCase)
+        public Task<Empty> Insert<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
             where TEntity : Entity
         {
@@ -73,7 +73,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Empty Update<TUseCase, TData, TEntity>(TUseCase useCase)
+        public Task<Empty> Update<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
             where TData : IIdentifyable
             where TEntity : Entity
@@ -84,7 +84,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Empty Delete<TUseCase, TEntity>(TUseCase useCase)
+        public Task<Empty> Delete<TUseCase, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<int, Empty>
             where TEntity : Entity
         {
@@ -94,7 +94,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public TOut Execute<TUseCase, TData, TOut>(TUseCase useCase)
+        public Task<TOut> Execute<TUseCase, TData, TOut>(TUseCase useCase)
             where TUseCase : UseCase<TData, TOut>
         {
             var handler = _useCaseHandlerGetter.GetHandler<TUseCase, TData, TOut>();

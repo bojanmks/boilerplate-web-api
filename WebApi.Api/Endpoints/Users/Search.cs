@@ -18,6 +18,7 @@ public class Search(
 
     public override async Task HandleAsync(UserSearch req, CancellationToken ct)
     {
-        await SendAsync(_mediator.Search<SearchUsersUseCase, User, UserDto>(new SearchUsersUseCase(req)), cancellation: ct);
+        var result = await _mediator.Search<SearchUsersUseCase, User, UserDto>(new SearchUsersUseCase(req));
+        await SendAsync(result, cancellation: ct);
     }
 }

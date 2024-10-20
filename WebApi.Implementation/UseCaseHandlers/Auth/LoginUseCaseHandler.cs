@@ -21,18 +21,18 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
             _jwtTokenStorage = jwtTokenStorage;
         }
 
-        public override Tokens Handle(LoginUseCase useCase)
+        public override async Task<Tokens> HandleAsync(LoginUseCase useCase, CancellationToken cancellationToken = default)
         {
-            var user = _accessor.GetQuery<User>().FirstOrDefault(x => x.Email == useCase.Data.Email);
+            var user = await _accessor.FindAsync<User>(x => x.Email == useCase.Data.Email);
 
             if (user is null || !user.IsPasswordCorrect(useCase.Data.Password))
             {
                 throw new ClientSideErrorException(_translator, "invalidCredentials");
             }
 
-            var tokens = _jwtTokenStorage.CreateRecord(user);
+            var tokens = await _jwtTokenStorage.CreateRecordAsync(user);
 
-            _jwtTokenStorage.DeleteExcessTokens(user.Id);
+            await _jwtTokenStorage.DeleteExcessTokensAsync(user.Id);
 
             return tokens;
         }

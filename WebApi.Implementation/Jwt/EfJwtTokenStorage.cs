@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Application.AppSettings;
 using WebApi.Application.Jwt;
 using WebApi.Common.DTO.Auth;
@@ -30,11 +31,11 @@ namespace WebApi.Implementation.Jwt
             _appSettings = appSettings;
         }
 
-        public JwtTokenRecordDto FindByRefreshToken(string token)
+        public async Task<JwtTokenRecordDto> FindByRefreshTokenAsync(string token, CancellationToken cancellationToken = default)
         {
             var tokenHash = _tokenCryptor.GetSha256Hash(token);
 
-            var jwtTokenRecord = _entityAccessor.Find<JwtTokenRecord>(x => x.RefreshToken == tokenHash);
+            var jwtTokenRecord = await _entityAccessor.FindAsync<JwtTokenRecord>(x => x.RefreshToken == tokenHash, cancellationToken: cancellationToken);
 
             if (jwtTokenRecord is null)
             {
@@ -44,7 +45,7 @@ namespace WebApi.Implementation.Jwt
             return _mapper.Map<JwtTokenRecordDto>(jwtTokenRecord);
         }
 
-        public Tokens CreateRecord(User user)
+        public async Task<Tokens> CreateRecordAsync(User user, CancellationToken cancellationToken = default)
         {
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(_mapper.Map<UserDto>(user));
             var refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
@@ -52,16 +53,16 @@ namespace WebApi.Implementation.Jwt
             var accessTokenHash = _tokenCryptor.GetSha256Hash(accessToken.Token);
             var refreshTokenHash = _tokenCryptor.GetSha256Hash(refreshToken.Token);
 
-            _entityAccessor.Add(new JwtTokenRecord
+            await _entityAccessor.AddAsync(new JwtTokenRecord
             {
                 AccessToken = accessTokenHash,
                 RefreshToken = refreshTokenHash,
                 AccessTokenExpiry = accessToken.Expiry,
                 RefreshTokenExpiry = refreshToken.Expiry,
                 UserId = user.Id
-            });
+            }, cancellationToken);
 
-            _entityAccessor.SaveChanges();
+            await _entityAccessor.SaveChangesAsync(cancellationToken);
 
             return new Tokens
             {
@@ -70,19 +71,20 @@ namespace WebApi.Implementation.Jwt
             };
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
-            _entityAccessor.Delete<JwtTokenRecord>(id);
-            _entityAccessor.SaveChanges();
+            await _entityAccessor.DeleteByIdAsync<JwtTokenRecord>(id, cancellationToken: cancellationToken);
+            await _entityAccessor.SaveChangesAsync(cancellationToken);
         }
 
-        public void DeleteExcessTokens(int userId)
+        public async Task DeleteExcessTokensAsync(int userId, CancellationToken cancellationToken = default)
         {
             int maxAllowedTokens = _appSettings.JwtSettings.MaxActiveRefreshTokens;
 
-            var usersTokenRecords = _entityAccessor
+            var usersTokenRecords = await _entityAccessor
                 .FindAll<JwtTokenRecord>(x => x.UserId == userId)
-                .OrderBy(x => x.Id);
+                .OrderBy(x => x.Id)
+                .ToListAsync(cancellationToken);
 
             int tokensCount = usersTokenRecords.Count();
 
@@ -96,7 +98,7 @@ namespace WebApi.Implementation.Jwt
             var tokenRecordsToRemove = usersTokenRecords.Take(numberOfTokensToRemove);
 
             _entityAccessor.DeleteBatch(tokenRecordsToRemove);
-            _entityAccessor.SaveChanges();
+            await _entityAccessor.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -6,9 +6,10 @@ namespace WebApi.Implementation.UseCaseSubscribers
 {
     public class LoginUseCaseSubscriber : IUseCaseSubscriber<LoginUseCase, LoginData, Tokens>
     {
-        public void OnUseCaseExecuted(UseCaseSubscriberData<LoginData, Tokens> data)
+        public Task OnUseCaseExecuted(UseCaseSubscriberData<LoginData, Tokens> data)
         {
             Console.WriteLine("Login use case was executed successfully.");
+            return Task.CompletedTask;
         }
     }
 }

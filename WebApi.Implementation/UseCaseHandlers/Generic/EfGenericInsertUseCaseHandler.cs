@@ -17,14 +17,14 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _mapper = mapper;
         }
 
-        public override Empty Handle(TUseCase useCase)
+        public override async Task<Empty> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             var entity = Activator.CreateInstance<TEntity>();
 
             _mapper.Map(useCase.Data, entity);
 
-            _accessor.Add(entity);
-            _accessor.SaveChanges();
+            await _accessor.AddAsync(entity, cancellationToken);
+            await _accessor.SaveChangesAsync(cancellationToken);
 
             return Empty.Value;
         }

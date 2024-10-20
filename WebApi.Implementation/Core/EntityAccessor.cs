@@ -36,39 +36,39 @@ namespace WebApi.Implementation.Core
             return query;
         }
 
-        public TEntity Find<TEntity>(int id, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public Task<TEntity?> FindByIdAsync<TEntity>(int id, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            return Find<TEntity>(x => x.Id == id, entityStatusFilter);
+            return FindAsync<TEntity>(x => x.Id == id, entityStatusFilter, cancellationToken);
         }
 
-        public TEntity Find<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public Task<TEntity?> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            return GetQuery<TEntity>(entityStatusFilter).FirstOrDefault(expression);
+            return GetQuery<TEntity>(entityStatusFilter).FirstOrDefaultAsync(expression, cancellationToken);
         }
 
-        public IQueryable<TEntity> FindAll<TEntity>(IEnumerable<int> ids, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public IQueryable<TEntity> FindAllByIds<TEntity>(IEnumerable<int> ids, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
         {
             return FindAll<TEntity>(x => ids.Contains(x.Id), entityStatusFilter);
         }
 
-        public IQueryable<TEntity> FindAll<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public IQueryable<TEntity> FindAll<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             return GetQuery<TEntity>(entityStatusFilter).Where(expression);
         }
 
-        public void Add<TEntity>(TEntity entity) where TEntity : class
+        public async Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {
-            _context.Set<TEntity>().Add(entity);
+            await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
         }
 
-        public void AddBatch<TEntity>(IEnumerable<TEntity> entity) where TEntity : class
+        public async Task AddBatchAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class
         {
-            _context.Set<TEntity>().AddRange(entity);
+            await _context.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
         }
 
-        public void Delete<TEntity>(int id, bool forceHardDelete = false) where TEntity : Entity
+        public async Task DeleteByIdAsync<TEntity>(int id, bool forceHardDelete = false, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            var entityToDelete = Find<TEntity>(id);
+            var entityToDelete = await FindByIdAsync<TEntity>(id, cancellationToken: cancellationToken);
 
             if (entityToDelete is null)
             {
@@ -76,12 +76,6 @@ namespace WebApi.Implementation.Core
             }
 
             Delete(entityToDelete, forceHardDelete);
-        }
-
-        public void DeleteBatch<TEntity>(IEnumerable<int> ids, bool forceHardDelete = false) where TEntity : Entity
-        {
-            var entitiesToDelete = FindAll<TEntity>(ids);
-            DeleteBatch(entitiesToDelete, forceHardDelete);
         }
 
         public void Delete<TEntity>(TEntity entity, bool forceHardDelete = false) where TEntity : class
@@ -97,6 +91,12 @@ namespace WebApi.Implementation.Core
             _context.Set<TEntity>().Remove(entity);
         }
 
+        public async Task DeleteBatchByIdsAsync<TEntity>(IEnumerable<int> ids, bool forceHardDelete = false, CancellationToken cancellationToken = default) where TEntity : Entity
+        {
+            var entitiesToDelete = await FindAllByIds<TEntity>(ids).ToListAsync(cancellationToken);
+            DeleteBatch(entitiesToDelete, forceHardDelete);
+        }
+
         public void DeleteBatch<TEntity>(IEnumerable<TEntity> entities, bool forceHardDelete = false) where TEntity : class
         {
             foreach (var entity in entities)
@@ -105,9 +105,9 @@ namespace WebApi.Implementation.Core
             }
         }
 
-        public void Deactivate<TEntity>(int id) where TEntity : Entity
+        public async Task DeactivateByIdAsync<TEntity>(int id, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            var entityToDeactivate = Find<TEntity>(id);
+            var entityToDeactivate = await FindByIdAsync<TEntity>(id, cancellationToken: cancellationToken);
 
             if (entityToDeactivate is null)
             {
@@ -117,15 +117,15 @@ namespace WebApi.Implementation.Core
             Deactivate(entityToDeactivate);
         }
 
-        public void DeactivateBatch<TEntity>(IEnumerable<int> ids) where TEntity : Entity
-        {
-            var entitiesToDeactivate = FindAll<TEntity>(ids);
-            DeactivateBatch(entitiesToDeactivate);
-        }
-
         public void Deactivate<TEntity>(TEntity entity) where TEntity : Entity
         {
             entity.IsActive = false;
+        }
+
+        public async Task DeactivateBatchByIdsAsync<TEntity>(IEnumerable<int> ids, CancellationToken cancellationToken = default) where TEntity : Entity
+        {
+            var entitiesToDeactivate = await FindAllByIds<TEntity>(ids).ToListAsync(cancellationToken);
+            DeactivateBatch(entitiesToDeactivate);
         }
 
         public void DeactivateBatch<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity
@@ -136,19 +136,19 @@ namespace WebApi.Implementation.Core
             }
         }
 
-        public bool Exists<TEntity>(int id, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public Task<bool> ExistsByIdAsync<TEntity>(int id, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            return GetQuery<TEntity>(entityStatusFilter).Any(x => x.Id == id);
+            return GetQuery<TEntity>(entityStatusFilter).AnyAsync(x => x.Id == id, cancellationToken);
         }
 
-        public bool Exists<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive) where TEntity : Entity
+        public Task<bool> ExistsAsync<TEntity>(Expression<Func<TEntity, bool>> expression, EntityStatusFilter entityStatusFilter = EntityStatusFilter.OnlyActive, CancellationToken cancellationToken = default) where TEntity : Entity
         {
-            return GetQuery<TEntity>(entityStatusFilter).Any(expression);
+            return GetQuery<TEntity>(entityStatusFilter).AnyAsync(expression, cancellationToken);
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
