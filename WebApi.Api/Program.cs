@@ -1,21 +1,14 @@
+using FastEndpoints;
 using WebApi.Api.Extensions;
 using WebApi.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddFastEndpoints();
 
 builder.SetupApplication();
 
 var app = builder.Build();
-
-app.UseCors(x =>
-{
-    x.AllowAnyOrigin();
-    x.AllowAnyMethod();
-    x.AllowAnyHeader();
-});
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -29,6 +22,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapFastEndpoints();
+});
 
 app.Run();
