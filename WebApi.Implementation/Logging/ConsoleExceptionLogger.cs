@@ -4,9 +4,10 @@ namespace WebApi.Implementation.Logging
 {
     public class ConsoleExceptionLogger : IExceptionLogger
     {
-        public void Log(Exception ex)
+        public Task Log(Exception ex)
         {
             Console.WriteLine(ex);
+            return Task.CompletedTask;
         }
     }
 }

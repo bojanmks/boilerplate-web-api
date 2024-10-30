@@ -1,9 +1,9 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
+﻿using WebApi.Application.ExceptionHandling;
 using WebApi.Implementation.Exceptions;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class ClientSideErrorExceptionResponseGenerator : ExceptionResponseGenerator<ClientSideErrorException>
+    public class ClientSideErrorExceptionResponseGenerator : BaseExceptionResponseGenerator<ClientSideErrorException>
     {
         protected override ExceptionResponse GenerateAfterCast(ClientSideErrorException ex)
         {

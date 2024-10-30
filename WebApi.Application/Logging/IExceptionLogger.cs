@@ -2,6 +2,6 @@
 {
     public interface IExceptionLogger
     {
-        void Log(Exception ex);
+        Task Log(Exception ex);
     }
 }

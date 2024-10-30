@@ -1,9 +1,9 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
+﻿using WebApi.Application.ExceptionHandling;
 using WebApi.Application.Exceptions;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class EntityNotFoundExceptionResponseGenerator : ExceptionResponseGenerator<EntityNotFoundException>
+    public class EntityNotFoundExceptionResponseGenerator : BaseExceptionResponseGenerator<EntityNotFoundException>
     {
         protected override ExceptionResponse GenerateAfterCast(EntityNotFoundException ex)
         {

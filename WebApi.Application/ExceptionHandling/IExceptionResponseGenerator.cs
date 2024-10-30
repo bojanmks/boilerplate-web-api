@@ -1,4 +1,4 @@
-﻿namespace WebApi.Api.ExceptionHandling.Abstraction
+﻿namespace WebApi.Application.ExceptionHandling
 {
     public interface IExceptionResponseGenerator
     {

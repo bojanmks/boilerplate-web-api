@@ -1,8 +1,8 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
+﻿using WebApi.Application.ExceptionHandling;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class UnauthorizedAccessExceptionResponseGenerator : ExceptionResponseGenerator<UnauthorizedAccessException>
+    public class UnauthorizedAccessExceptionResponseGenerator : BaseExceptionResponseGenerator<UnauthorizedAccessException>
     {
         protected override ExceptionResponse GenerateAfterCast(UnauthorizedAccessException ex)
         {

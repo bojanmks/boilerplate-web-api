@@ -13,15 +13,15 @@ namespace WebApi.Implementation.UseCases
     {
         private readonly IApplicationUser _applicationUser;
         private readonly IUseCaseLogger _useCaseLogger;
-        private readonly IUseCaseSubscriberResolver _subscriberGetter;
-        private readonly IValidatorResolver _validatorGetter;
+        private readonly IUseCaseSubscriberResolver _subscriberResolver;
+        private readonly IValidatorResolver _validatorResolver;
 
-        public UseCaseExecutor(IApplicationUser applicationUser, IUseCaseLogger useCaseLogger, IUseCaseSubscriberResolver subscriberGetter, IValidatorResolver validatorGetter)
+        public UseCaseExecutor(IApplicationUser applicationUser, IUseCaseLogger useCaseLogger, IUseCaseSubscriberResolver subscriberResolver, IValidatorResolver validatorResolver)
         {
             _applicationUser = applicationUser;
             _useCaseLogger = useCaseLogger;
-            _subscriberGetter = subscriberGetter;
-            _validatorGetter = validatorGetter;
+            _subscriberResolver = subscriberResolver;
+            _validatorResolver = validatorResolver;
         }
 
         public async Task<TOut> Execute(TUseCase useCase, UseCaseHandler<TUseCase, TData, TOut> handler)
@@ -52,10 +52,10 @@ namespace WebApi.Implementation.UseCases
 
             if (!isAuthorized)
             {
-                throw new ForbiddenUseCaseException(useCase.Id, _applicationUser.Id.ToString());
+                throw new ForbiddenUseCaseException(useCase.Id, _applicationUser.Id?.ToString());
             }
 
-            var validator = _validatorGetter.Resolve<TUseCase>();
+            var validator = _validatorResolver.Resolve<TUseCase>();
 
             if (validator is not null)
             {
@@ -65,7 +65,7 @@ namespace WebApi.Implementation.UseCases
 
         private async Task ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
         {
-            var subscribers = _subscriberGetter.ResolveAll<TUseCase, TData, TOut>();
+            var subscribers = _subscriberResolver.ResolveAll<TUseCase, TData, TOut>();
 
             if (subscribers is null)
             {

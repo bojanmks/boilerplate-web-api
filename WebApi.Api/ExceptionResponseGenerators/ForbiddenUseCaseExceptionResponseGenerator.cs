@@ -1,9 +1,9 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
+﻿using WebApi.Application.ExceptionHandling;
 using WebApi.Implementation.Exceptions;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class ForbiddenUseCaseExceptionResponseGenerator : ExceptionResponseGenerator<ForbiddenUseCaseException>
+    public class ForbiddenUseCaseExceptionResponseGenerator : BaseExceptionResponseGenerator<ForbiddenUseCaseException>
     {
         protected override ExceptionResponse GenerateAfterCast(ForbiddenUseCaseException ex)
         {

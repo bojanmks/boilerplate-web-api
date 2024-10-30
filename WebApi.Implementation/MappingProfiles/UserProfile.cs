@@ -2,7 +2,7 @@
 using WebApi.Common.DTO.Users;
 using WebApi.DataAccess.Entities;
 
-namespace WebApi.Implementation.Profiles
+namespace WebApi.Implementation.MappingProfiles
 {
     public class UserProfile : Profile
     {

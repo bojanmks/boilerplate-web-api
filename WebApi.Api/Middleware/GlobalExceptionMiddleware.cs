@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using WebApi.Api.ExceptionHandling;
-using WebApi.Api.ExceptionHandling.Abstraction;
+using WebApi.Application.ExceptionHandling;
 using WebApi.Application.Logging;
 
 namespace WebApi.Api.Middleware
@@ -9,13 +8,13 @@ namespace WebApi.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IExceptionLogger _exceptionLogger;
-        private readonly IExceptionResponseGeneratorGetter _responseGeneratorGetter;
+        private readonly IExceptionResponseGeneratorResolver _responseGeneratorResolver;
 
-        public GlobalExceptionMiddleware(RequestDelegate next, IExceptionLogger exceptionLogger, IExceptionResponseGeneratorGetter responseGeneratorGetter)
+        public GlobalExceptionMiddleware(RequestDelegate next, IExceptionLogger exceptionLogger, IExceptionResponseGeneratorResolver responseGeneratorResolver)
         {
             _next = next;
             _exceptionLogger = exceptionLogger;
-            _responseGeneratorGetter = responseGeneratorGetter;
+            _responseGeneratorResolver = responseGeneratorResolver;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -26,14 +25,14 @@ namespace WebApi.Api.Middleware
             }
             catch (Exception ex)
             {
-                await HandleExeption(httpContext, ex);
+                await HandleException(httpContext, ex);
             }
         }
 
-        private Task HandleExeption(HttpContext httpContext, Exception ex)
+        private Task HandleException(HttpContext httpContext, Exception ex)
         {
             var exceptionResponse = new ExceptionResponse();
-            var responseGenerator = _responseGeneratorGetter.Get(ex);
+            var responseGenerator = _responseGeneratorResolver.Resolve(ex);
 
             if (responseGenerator is not null)
             {

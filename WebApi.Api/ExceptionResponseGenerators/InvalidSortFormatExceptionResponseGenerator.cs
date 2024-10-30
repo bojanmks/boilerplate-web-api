@@ -1,11 +1,11 @@
-﻿using WebApi.Api.ExceptionHandling.Abstraction;
+﻿using WebApi.Application.ExceptionHandling;
 using WebApi.Application.Exceptions;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class InvalidSortDirectionExceptionResponseGenerator : ExceptionResponseGenerator<InvalidSortDirectionException>
+    public class InvalidSortFormatExceptionResponseGenerator : BaseExceptionResponseGenerator<InvalidSortFormatException>
     {
-        protected override ExceptionResponse GenerateAfterCast(InvalidSortDirectionException ex)
+        protected override ExceptionResponse GenerateAfterCast(InvalidSortFormatException ex)
         {
             return new ExceptionResponse
             {

@@ -1,20 +1,21 @@
 ﻿using FluentValidation;
-using WebApi.Api.ExceptionHandling.Abstraction;
+using WebApi.Application.ExceptionHandling;
 
-namespace WebApi.Api.ExceptionHandling.ResponseGenerators
+namespace WebApi.Api.ExceptionResponseGenerators
 {
-    public class ValidationExceptionResponseGenerator : ExceptionResponseGenerator<ValidationException>
+    public class ValidationExceptionResponseGenerator : BaseExceptionResponseGenerator<ValidationException>
     {
-        private readonly IExceptionResponseGeneratorGetter _responseGeneratorGetter;
+        private readonly IExceptionResponseGeneratorResolver _responseGeneratorResolver;
 
-        public ValidationExceptionResponseGenerator(IExceptionResponseGeneratorGetter responseGeneratorGetter)
+        public ValidationExceptionResponseGenerator(IExceptionResponseGeneratorResolver responseGeneratorResolver)
         {
-            _responseGeneratorGetter = responseGeneratorGetter;
+            _responseGeneratorResolver = responseGeneratorResolver;
         }
 
         protected override ExceptionResponse GenerateAfterCast(ValidationException ex)
         {
             var customExceptionResponse = GetCustomExceptionResponse(ex);
+
             if (customExceptionResponse is not null)
             {
                 return customExceptionResponse;
@@ -44,7 +45,7 @@ namespace WebApi.Api.ExceptionHandling.ResponseGenerators
                 return null;
             }
 
-            var responseGenerator = _responseGeneratorGetter.Get(customException);
+            var responseGenerator = _responseGeneratorResolver.Resolve(customException);
 
             if (responseGenerator is null)
             {

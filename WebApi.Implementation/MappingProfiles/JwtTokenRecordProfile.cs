@@ -2,7 +2,7 @@
 using WebApi.Common.DTO.Auth;
 using WebApi.DataAccess.Entities;
 
-namespace WebApi.Implementation.Profiles
+namespace WebApi.Implementation.MappingProfiles
 {
     public class JwtTokenRecordProfile : Profile
     {
