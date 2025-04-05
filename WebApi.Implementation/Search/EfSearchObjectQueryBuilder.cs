@@ -28,7 +28,7 @@ namespace WebApi.Implementation.Search
             return ExecuteSearchAsync<TEntity, TOut>(search, query, cancellationToken);
         }
 
-        public IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
+        private IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             if (search is EfBaseSearch<TEntity> efSearch)
             {
@@ -43,14 +43,7 @@ namespace WebApi.Implementation.Search
             return query;
         }
 
-        public IEnumerable<TOut> BuildQuery<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
-        {
-            query = BuildQuery(search, query);
-
-            return _mapper.Map<IEnumerable<TOut>>(query.ToList());
-        }
-
-        public IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
+        private IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             if (string.IsNullOrEmpty(search.SortBy) || search is not EfBaseSearch<TEntity>)
             {
@@ -106,14 +99,7 @@ namespace WebApi.Implementation.Search
             return query;
         }
 
-        public IEnumerable<TOut> BuildOrderBy<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
-        {
-            query = BuildOrderBy(search, query);
-
-            return _mapper.Map<IEnumerable<TOut>>(query.ToList());
-        }
-
-        public async Task<object> ExecuteSearchAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
+        private async Task<object> ExecuteSearchAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             if (search.Paginate)
             {
