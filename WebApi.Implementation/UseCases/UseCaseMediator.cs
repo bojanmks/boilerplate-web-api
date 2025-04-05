@@ -5,6 +5,7 @@ using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Application.Validation;
 using WebApi.Common;
+using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.Exceptions;
@@ -42,7 +43,7 @@ namespace WebApi.Implementation.UseCases
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
-        public Task<object> Search<TUseCase, TEntity, TOut>(TUseCase useCase)
+        public Task<Result<object>> Search<TUseCase, TEntity, TOut>(TUseCase useCase)
             where TUseCase : UseCase<ISearchObject, object>
             where TOut : IIdentifyable
             where TEntity : Entity
@@ -53,7 +54,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Task<TOut> Find<TUseCase, TEntity, TOut>(TUseCase useCase)
+        public Task<Result<TOut>> Find<TUseCase, TEntity, TOut>(TUseCase useCase)
             where TUseCase : UseCase<int, TOut>
             where TEntity : Entity
         {
@@ -63,7 +64,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Task<Empty> Insert<TUseCase, TData, TEntity>(TUseCase useCase)
+        public Task<Result<Empty>> Insert<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
             where TEntity : Entity
         {
@@ -73,7 +74,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Task<Empty> Update<TUseCase, TData, TEntity>(TUseCase useCase)
+        public Task<Result<Empty>> Update<TUseCase, TData, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<TData, Empty>
             where TData : IIdentifyable
             where TEntity : Entity
@@ -84,7 +85,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Task<Empty> Delete<TUseCase, TEntity>(TUseCase useCase)
+        public Task<Result<Empty>> Delete<TUseCase, TEntity>(TUseCase useCase)
             where TUseCase : UseCase<int, Empty>
             where TEntity : Entity
         {
@@ -94,7 +95,7 @@ namespace WebApi.Implementation.UseCases
             return executor.Execute(useCase, handler);
         }
 
-        public Task<TOut> Execute<TUseCase, TData, TOut>(TUseCase useCase)
+        public Task<Result<TOut>> Execute<TUseCase, TData, TOut>(TUseCase useCase)
             where TUseCase : UseCase<TData, TOut>
         {
             var handler = _useCaseHandlerResolver.Resolve<TUseCase, TData, TOut>();

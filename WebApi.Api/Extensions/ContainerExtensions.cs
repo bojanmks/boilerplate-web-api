@@ -1,27 +1,25 @@
-﻿using FluentValidation;
+﻿using System.Data;
+using System.Reflection;
+using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Data;
-using System.Reflection;
-using System.Text;
 using WebApi.Api.Core;
 using WebApi.Application.ApplicationUsers;
 using WebApi.Application.AppSettings;
-using WebApi.Application.ExceptionHandling;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
 using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Application.Validation;
-using WebApi.Common.Enums;
+using WebApi.Common.Enums.Auth;
 using WebApi.DataAccess;
 using WebApi.Implementation.ApplicationUsers;
 using WebApi.Implementation.Core;
-using WebApi.Implementation.ExceptionHandling;
 using WebApi.Implementation.Extensions;
 using WebApi.Implementation.Jwt;
 using WebApi.Implementation.Localization;
@@ -90,7 +88,6 @@ namespace WebApi.Api.Extensions
             services.AddApplicationUser();
             services.AddUseCases();
             services.AddAutoMapper();
-            services.AddExceptionResponseGenerators();
             services.SetupLocalization();
 
             services.AddTransient(provider => new SqlConnection(appSettings.ConnectionStrings.Primary));
@@ -99,7 +96,6 @@ namespace WebApi.Api.Extensions
             services.AddTransient<EntityAccessor>();
             services.AddTransient<IUseCaseLogger, ConsoleUseCaseLogger>();
             services.AddTransient<IExceptionLogger, ConsoleExceptionLogger>();
-            services.AddTransient<IExceptionResponseGeneratorResolver, ServiceProviderExceptionResponseGeneratorResolver>();
             services.AddTransient<TokenCryptor>();
             services.AddTransient<ClaimsGenerator>();
             services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -325,19 +321,6 @@ namespace WebApi.Api.Extensions
         private static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        }
-
-        private static void AddExceptionResponseGenerators(this IServiceCollection services)
-        {
-            var interfaceType = typeof(IExceptionResponseGenerator<>);
-            var assembliesToLookThrough = new Assembly[] { Assembly.GetExecutingAssembly() };
-
-            var exceptionResponseGeneratorTypesData = interfaceType.GetGenericInterfaceImplementationTypes(assembliesToLookThrough);
-
-            foreach (var typeData in exceptionResponseGeneratorTypesData)
-            {
-                services.AddTransient(typeData.ImplementedInterface, typeData.ImplementationType);
-            }
         }
 
         private static void SetupLocalization(this IServiceCollection services)

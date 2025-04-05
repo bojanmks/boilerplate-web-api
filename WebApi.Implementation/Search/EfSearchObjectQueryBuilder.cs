@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WebApi.Application.Exceptions;
 using WebApi.Application.Localization;
 using WebApi.Application.Search;
-using WebApi.Common.Enums;
+using WebApi.Common.DTO.Result;
+using WebApi.Common.Enums.Filtering;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Extensions;
 
@@ -20,12 +20,22 @@ namespace WebApi.Implementation.Search
             _translator = translator;
         }
 
-        public Task<object> BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
+        public async Task<Result<object>> BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             query = BuildQuery(search, query);
-            query = BuildOrderBy(search, query);
 
-            return ExecuteSearchAsync<TEntity, TOut>(search, query, cancellationToken);
+            var orderByResult = BuildOrderBy(search, query);
+
+            if (!orderByResult.IsSuccess)
+            {
+                return Result<object>.Error(orderByResult.Errors);
+            }
+
+            query = orderByResult.Data;
+
+            var result = await ExecuteSearchAsync<TEntity, TOut>(search, query, cancellationToken);
+
+            return Result<object>.Success(result);
         }
 
         private IQueryable<TEntity> BuildQuery<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
@@ -43,11 +53,11 @@ namespace WebApi.Implementation.Search
             return query;
         }
 
-        private IQueryable<TEntity> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
+        private Result<IQueryable<TEntity>> BuildOrderBy<TEntity>(ISearchObject search, IQueryable<TEntity> query) where TEntity : Entity
         {
             if (string.IsNullOrEmpty(search.SortBy) || search is not EfBaseSearch<TEntity>)
             {
-                return query;
+                return Result<IQueryable<TEntity>>.Success(query);
             }
 
             var sortByArgs = search.SortBy.Split(',');
@@ -58,7 +68,7 @@ namespace WebApi.Implementation.Search
 
                 if (propAndDirection.Count() != 2)
                 {
-                    throw new InvalidSortFormatException(_translator);
+                    return Result<IQueryable<TEntity>>.Error(new string[] { _translator.Translate("invalidSortStringFormat") });
                 }
 
                 string sortPropertyName = propAndDirection[0];
@@ -70,7 +80,7 @@ namespace WebApi.Implementation.Search
                 }
                 else
                 {
-                    throw new InvalidSortDirectionException(_translator);
+                    return Result<IQueryable<TEntity>>.Error(new string[] { _translator.Translate("invalidSortDirection") });
                 }
 
                 var sortByExpression = ((EfBaseSearch<TEntity>)search).GetSortByPropertyExpression(sortPropertyName);
@@ -96,7 +106,7 @@ namespace WebApi.Implementation.Search
                 }
             }
 
-            return query;
+            return Result<IQueryable<TEntity>>.Success(query);
         }
 
         private async Task<object> ExecuteSearchAsync<TEntity, TOut>(ISearchObject search, IQueryable<TEntity> query, CancellationToken cancellationToken = default) where TEntity : Entity

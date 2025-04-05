@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using WebApi.Application.Exceptions;
-using WebApi.Common.Enums;
+﻿using System.Linq.Expressions;
+using System.Net;
+using Microsoft.EntityFrameworkCore;
+using WebApi.Application.UseCases;
+using WebApi.Common.DTO.Result;
+using WebApi.Common.Enums.EntityAccessor;
 using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Implementation.Core
@@ -66,16 +68,21 @@ namespace WebApi.Implementation.Core
             await _context.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
         }
 
-        public async Task DeleteByIdAsync<TEntity>(int id, bool forceHardDelete = false, CancellationToken cancellationToken = default) where TEntity : Entity
+        public async Task<Result<Empty>> DeleteByIdAsync<TEntity>(int id, bool forceHardDelete = false, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             var entityToDelete = await FindByIdAsync<TEntity>(id, cancellationToken: cancellationToken);
 
             if (entityToDelete is null)
             {
-                throw new EntityNotFoundException();
+                var errorResult = Result<Empty>.Error(Enumerable.Empty<string>());
+                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
+
+                return errorResult;
             }
 
             Delete(entityToDelete, forceHardDelete);
+
+            return Result<Empty>.Success(Empty.Value);
         }
 
         public void Delete<TEntity>(TEntity entity, bool forceHardDelete = false) where TEntity : class
@@ -105,16 +112,21 @@ namespace WebApi.Implementation.Core
             }
         }
 
-        public async Task DeactivateByIdAsync<TEntity>(int id, CancellationToken cancellationToken = default) where TEntity : Entity
+        public async Task<Result<Empty>> DeactivateByIdAsync<TEntity>(int id, CancellationToken cancellationToken = default) where TEntity : Entity
         {
             var entityToDeactivate = await FindByIdAsync<TEntity>(id, cancellationToken: cancellationToken);
 
             if (entityToDeactivate is null)
             {
-                throw new EntityNotFoundException();
+                var errorResult = Result<Empty>.Error(Enumerable.Empty<string>());
+                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
+
+                return errorResult;
             }
 
             Deactivate(entityToDeactivate);
+
+            return Result<Empty>.Success(Empty.Value);
         }
 
         public void Deactivate<TEntity>(TEntity entity) where TEntity : Entity

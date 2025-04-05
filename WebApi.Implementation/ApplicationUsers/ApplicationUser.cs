@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using WebApi.Application.ApplicationUsers;
-using WebApi.Common.Enums;
+using WebApi.Common.Enums.Auth;
 
 namespace WebApi.Implementation.ApplicationUsers
 {

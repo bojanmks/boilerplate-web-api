@@ -1,4 +1,4 @@
-﻿namespace WebApi.Common.Enums
+﻿namespace WebApi.Common.Enums.Filtering
 {
     public enum SortDirection
     {

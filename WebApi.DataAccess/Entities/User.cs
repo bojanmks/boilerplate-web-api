@@ -1,4 +1,4 @@
-﻿using WebApi.Common.Enums;
+﻿using WebApi.Common.Enums.Auth;
 using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.DataAccess.Entities

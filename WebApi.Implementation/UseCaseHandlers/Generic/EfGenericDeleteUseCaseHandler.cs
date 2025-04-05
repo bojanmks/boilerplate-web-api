@@ -1,4 +1,5 @@
 ﻿using WebApi.Application.UseCases;
+using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
@@ -13,12 +14,12 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
         {
         }
 
-        public override async Task<Empty> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
+        public override async Task<Result<Empty>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             await _accessor.DeleteByIdAsync<TEntity>(useCase.Data, cancellationToken: cancellationToken);
             await _accessor.SaveChangesAsync(cancellationToken);
 
-            return Empty.Value;
+            return Result<Empty>.Success(Empty.Value);
         }
     }
 }

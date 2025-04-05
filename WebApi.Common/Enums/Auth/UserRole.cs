@@ -1,4 +1,4 @@
-﻿namespace WebApi.Common.Enums
+﻿namespace WebApi.Common.Enums.Auth
 {
     public enum UserRole
     {

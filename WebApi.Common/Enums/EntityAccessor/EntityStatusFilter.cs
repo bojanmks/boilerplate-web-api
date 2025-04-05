@@ -1,4 +1,4 @@
-﻿namespace WebApi.Common.Enums
+﻿namespace WebApi.Common.Enums.EntityAccessor
 {
     public enum EntityStatusFilter
     {

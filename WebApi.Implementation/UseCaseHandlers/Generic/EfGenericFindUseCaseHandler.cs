@@ -1,6 +1,7 @@
-﻿using AutoMapper;
-using WebApi.Application.Exceptions;
+﻿using System.Net;
+using AutoMapper;
 using WebApi.Application.UseCases;
+using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
@@ -18,16 +19,21 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _mapper = mapper;
         }
 
-        public override async Task<TOut> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
+        public override async Task<Result<TOut>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             var dataFromDb = await _accessor.FindByIdAsync<TEntity>(useCase.Data, cancellationToken: cancellationToken);
 
             if (dataFromDb is null)
             {
-                throw new EntityNotFoundException();
+                var errorResult = Result<TOut>.Error(Enumerable.Empty<string>());
+                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
+
+                return errorResult;
             }
 
-            return _mapper.Map<TOut>(dataFromDb);
+            var result = _mapper.Map<TOut>(dataFromDb);
+
+            return Result<TOut>.Success(result);
         }
     }
 }

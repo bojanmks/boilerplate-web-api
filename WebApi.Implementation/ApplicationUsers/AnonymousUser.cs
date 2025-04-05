@@ -1,4 +1,4 @@
-﻿using WebApi.Common.Enums;
+﻿using WebApi.Common.Enums.Auth;
 
 namespace WebApi.Implementation.ApplicationUsers
 {

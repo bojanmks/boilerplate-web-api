@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using WebApi.Application.ExceptionHandling;
-using WebApi.Application.Logging;
+﻿using WebApi.Application.Logging;
 
 namespace WebApi.Api.Middleware
 {
@@ -8,13 +6,11 @@ namespace WebApi.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IExceptionLogger _exceptionLogger;
-        private readonly IExceptionResponseGeneratorResolver _responseGeneratorResolver;
 
-        public GlobalExceptionMiddleware(RequestDelegate next, IExceptionLogger exceptionLogger, IExceptionResponseGeneratorResolver responseGeneratorResolver)
+        public GlobalExceptionMiddleware(RequestDelegate next, IExceptionLogger exceptionLogger)
         {
             _next = next;
             _exceptionLogger = exceptionLogger;
-            _responseGeneratorResolver = responseGeneratorResolver;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -29,30 +25,12 @@ namespace WebApi.Api.Middleware
             }
         }
 
-        private Task HandleException(HttpContext httpContext, Exception ex)
+        private async Task HandleException(HttpContext httpContext, Exception ex)
         {
-            var exceptionResponse = new ExceptionResponse();
-            var responseGenerator = _responseGeneratorResolver.Resolve(ex);
-
-            if (responseGenerator is not null)
-            {
-                exceptionResponse = responseGenerator.Generate(ex);
-            }
-
-            if (exceptionResponse.ShouldBeLogged)
-            {
-                _exceptionLogger.Log(ex);
-            }
+            await _exceptionLogger.Log(ex);
 
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = exceptionResponse.StatusCode;
-
-            if (exceptionResponse.Response != null)
-            {
-                return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(exceptionResponse.Response));
-            }
-
-            return Task.FromResult(httpContext.Response);
+            httpContext.Response.StatusCode = 500;
         }
     }
 }

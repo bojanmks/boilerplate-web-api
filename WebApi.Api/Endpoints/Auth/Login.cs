@@ -1,5 +1,4 @@
-﻿using FastEndpoints;
-using WebApi.Application.UseCases.Auth;
+﻿using WebApi.Application.UseCases.Auth;
 using WebApi.Common.DTO.Auth;
 using WebApi.Implementation.UseCases;
 
@@ -7,7 +6,7 @@ namespace WebApi.Api.Endpoints.Auth;
 
 public class Login(
     UseCaseMediator _mediator
-) : Endpoint<LoginData, Tokens>
+) : BaseEndpoint<LoginData, Tokens>
 {
     public override void Configure()
     {
@@ -18,6 +17,6 @@ public class Login(
     public override async Task HandleAsync(LoginData req, CancellationToken ct)
     {
         var result = await _mediator.Execute<LoginUseCase, LoginData, Tokens>(new LoginUseCase(req));
-        await SendAsync(result, cancellation: ct);
+        await RespondFromResult(result, ct);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Common;
+using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
@@ -19,13 +20,15 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
         }
 
-        public override Task<object> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
+        public override async Task<Result<object>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             var query = _accessor.GetQuery<TEntity>();
 
             var searchObj = useCase.Data;
 
-            return _searchObjectQueryBuilder.BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(searchObj, query);
+            var result = await _searchObjectQueryBuilder.BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(searchObj, query);
+
+            return result;
         }
     }
 }

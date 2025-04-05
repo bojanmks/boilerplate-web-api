@@ -1,5 +1,5 @@
 ﻿using WebApi.Common.DTO.Auth;
-using WebApi.Common.Enums;
+using WebApi.Common.Enums.Auth;
 
 namespace WebApi.Application.UseCases.Auth
 {
