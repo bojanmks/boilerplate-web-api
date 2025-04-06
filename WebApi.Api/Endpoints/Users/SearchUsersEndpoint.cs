@@ -7,7 +7,7 @@ using WebApi.Implementation.UseCases;
 
 namespace WebApi.Api.Endpoints.Users;
 
-public class Search(
+public class SearchUsersEndpoint(
     UseCaseMediator _mediator
 ) : Endpoint<UserSearch, object>
 {

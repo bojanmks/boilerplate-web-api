@@ -4,7 +4,7 @@ using WebApi.Implementation.UseCases;
 
 namespace WebApi.Api.Endpoints.Auth;
 
-public class RefreshToken(
+public class RefreshTokenEndpoint(
     UseCaseMediator _mediator
 ) : BaseEndpoint<Tokens, Tokens>
 {

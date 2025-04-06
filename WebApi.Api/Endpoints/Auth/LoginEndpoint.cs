@@ -4,7 +4,7 @@ using WebApi.Implementation.UseCases;
 
 namespace WebApi.Api.Endpoints.Auth;
 
-public class Login(
+public class LoginEndpoint(
     UseCaseMediator _mediator
 ) : BaseEndpoint<LoginData, Tokens>
 {
