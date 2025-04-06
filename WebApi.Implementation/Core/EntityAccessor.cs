@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Net;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Application.UseCases;
 using WebApi.Common.DTO.Result;
@@ -74,10 +73,7 @@ namespace WebApi.Implementation.Core
 
             if (entityToDelete is null)
             {
-                var errorResult = Result<Empty>.Error(Enumerable.Empty<string>());
-                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
-
-                return errorResult;
+                return Result<Empty>.NotFound();
             }
 
             Delete(entityToDelete, forceHardDelete);
@@ -118,10 +114,7 @@ namespace WebApi.Implementation.Core
 
             if (entityToDeactivate is null)
             {
-                var errorResult = Result<Empty>.Error(Enumerable.Empty<string>());
-                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
-
-                return errorResult;
+                return Result<Empty>.NotFound();
             }
 
             Deactivate(entityToDeactivate);

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using WebApi.Application.UseCases;
 using WebApi.Common;
 using WebApi.Common.DTO.Result;
@@ -27,10 +26,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             if (dataFromDb is null)
             {
-                var errorResult = Result<Empty>.Error(Enumerable.Empty<string>());
-                errorResult.HttpStatusCode = (int)HttpStatusCode.NotFound;
-
-                return errorResult;
+                return Result<Empty>.NotFound();
             }
 
             _mapper.Map(useCase.Data, dataFromDb);

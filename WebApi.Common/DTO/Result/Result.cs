@@ -37,5 +37,14 @@ namespace WebApi.Common.DTO.Result
                 Status = ResultStatus.ValidationError
             };
         }
+
+        public static Result<T> NotFound(IEnumerable<string>? errors = null)
+        {
+            return new Result<T>
+            {
+                Errors = errors ?? Enumerable.Empty<string>(),
+                Status = ResultStatus.NotFound
+            };
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace WebApi.Implementation.Jwt
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
 
-            string refreshToken =  Convert.ToBase64String(randomNumber);
+            string refreshToken = Convert.ToBase64String(randomNumber);
 
             var token = new TokenData
             {

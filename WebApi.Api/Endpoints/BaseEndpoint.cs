@@ -16,6 +16,7 @@ namespace WebApi.Api.Endpoints
                     ResultStatus.Success => 200,
                     ResultStatus.Error => 500,
                     ResultStatus.ValidationError => 422,
+                    ResultStatus.NotFound => 404,
                     _ => throw new ArgumentOutOfRangeException(nameof(result.Status), $"Unexpected result status value: {result.Status}")
                 };
 
@@ -26,7 +27,11 @@ namespace WebApi.Api.Endpoints
                 StatusCode = statusCode
             };
 
-            await SendAsync(endpointResponse, cancellation: cancellationToken);
+            await SendAsync(
+                endpointResponse,
+                statusCode: statusCode,
+                cancellation: cancellationToken
+            );
         }
     }
 }
