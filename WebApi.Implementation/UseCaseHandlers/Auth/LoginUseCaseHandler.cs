@@ -1,4 +1,5 @@
 ﻿using WebApi.Application.Jwt;
+using WebApi.Application.Localization;
 using WebApi.Application.UseCases.Auth;
 using WebApi.Common.DTO.Auth;
 using WebApi.Common.DTO.Result;
@@ -12,10 +13,16 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
     public class LoginUseCaseHandler : EfUseCaseHandler<LoginUseCase, LoginData, Tokens>
     {
         private readonly IJwtTokenStorage _jwtTokenStorage;
+        private readonly ITranslator _translator;
 
-        public LoginUseCaseHandler(EntityAccessor accessor, IJwtTokenStorage jwtTokenStorage) : base(accessor)
+        public LoginUseCaseHandler(
+            EntityAccessor accessor,
+            IJwtTokenStorage jwtTokenStorage,
+            ITranslator translator
+        ) : base(accessor)
         {
             _jwtTokenStorage = jwtTokenStorage;
+            _translator = translator;
         }
 
         public override async Task<Result<Tokens>> HandleAsync(LoginUseCase useCase, CancellationToken cancellationToken = default)
@@ -24,7 +31,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             if (user is null || !user.IsPasswordCorrect(useCase.Data.Password))
             {
-                return Result<Tokens>.Error(Enumerable.Empty<string>());
+                return Result<Tokens>.ValidationError(new[] { _translator.Translate("invalidCredentials") });
             }
 
             var tokens = await _jwtTokenStorage.CreateRecordAsync(user);
