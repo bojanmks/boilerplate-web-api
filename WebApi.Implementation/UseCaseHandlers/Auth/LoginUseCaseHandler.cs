@@ -1,5 +1,4 @@
 ﻿using WebApi.Application.Jwt;
-using WebApi.Application.Localization;
 using WebApi.Application.UseCases.Auth;
 using WebApi.Common.DTO.Auth;
 using WebApi.Common.DTO.Result;
@@ -12,12 +11,10 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 {
     public class LoginUseCaseHandler : EfUseCaseHandler<LoginUseCase, LoginData, Tokens>
     {
-        private readonly ITranslator _translator;
         private readonly IJwtTokenStorage _jwtTokenStorage;
 
-        public LoginUseCaseHandler(EntityAccessor accessor, ITranslator translator, IJwtTokenStorage jwtTokenStorage) : base(accessor)
+        public LoginUseCaseHandler(EntityAccessor accessor, IJwtTokenStorage jwtTokenStorage) : base(accessor)
         {
-            _translator = translator;
             _jwtTokenStorage = jwtTokenStorage;
         }
 
