@@ -38,6 +38,7 @@ namespace WebApi.Api.Extensions
             builder.Configuration.Bind(appSettings);
 
             builder.Services.AddSwagger();
+            builder.Services.AddMemoryCache();
             builder.Services.RegisterDependencies(appSettings);
         }
 
