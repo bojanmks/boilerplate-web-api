@@ -29,11 +29,6 @@ namespace WebApi.Implementation.Jwt
             return claims;
         }
 
-        public List<Claim> GenerateRefreshTokenClaims()
-        {
-            return GenerateBaseClaims();
-        }
-
         private List<Claim> GenerateBaseClaims()
         {
             var claims = new List<Claim>
