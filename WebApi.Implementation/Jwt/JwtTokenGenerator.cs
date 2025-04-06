@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Application.AppSettings;
@@ -35,13 +36,18 @@ namespace WebApi.Implementation.Jwt
 
         public TokenData GenerateRefreshToken()
         {
-            var claims = _claimsGenerator.GenerateRefreshTokenClaims();
+            var randomNumber = new byte[32];
 
-            var token = GenerateToken(new TokenGenerationData
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+
+            string refreshToken =  Convert.ToBase64String(randomNumber);
+
+            var token = new TokenData
             {
-                Claims = claims,
-                Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenValidityInDays)
-            });
+                Token = refreshToken,
+                Expiry = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenValidityInDays)
+            };
 
             return token;
         }

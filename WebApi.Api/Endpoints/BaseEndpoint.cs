@@ -22,7 +22,7 @@ namespace WebApi.Api.Endpoints
             var endpointResponse = new EndpointResponse<TResponse>
             {
                 Data = result.Data,
-                ErrorMessages = result.Errors,
+                ErrorMessages = result.Errors ?? Enumerable.Empty<string>(),
                 StatusCode = statusCode
             };
 
