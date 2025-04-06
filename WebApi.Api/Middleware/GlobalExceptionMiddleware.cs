@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.Api.Endpoints;
 using WebApi.Application.Localization;
@@ -39,11 +40,7 @@ namespace WebApi.Api.Middleware
         {
             await _exceptionLogger.Log(ex);
 
-            httpContext.Response.ContentType = "application/json";
-
-            int statusCode = 500;
-
-            httpContext.Response.StatusCode = statusCode;
+            int statusCode = (int)HttpStatusCode.InternalServerError;
 
             var responseBody = new EndpointResponse<Empty>
             {
@@ -59,6 +56,9 @@ namespace WebApi.Api.Middleware
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 }
             );
+
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.StatusCode = statusCode;
 
             await httpContext.Response.WriteAsync(serializedBody);
         }

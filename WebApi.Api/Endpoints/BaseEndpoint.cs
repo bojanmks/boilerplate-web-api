@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿using System.Net;
+using FastEndpoints;
 using WebApi.Common.DTO.Result;
 using WebApi.Common.Enums.Result;
 
@@ -13,10 +14,10 @@ namespace WebApi.Api.Endpoints
                 ? result.HttpStatusCode.Value
                 : result.Status switch
                 {
-                    ResultStatus.Success => 200,
-                    ResultStatus.Error => 500,
-                    ResultStatus.ValidationError => 422,
-                    ResultStatus.NotFound => 404,
+                    ResultStatus.Success => (int)HttpStatusCode.OK,
+                    ResultStatus.Error => (int)HttpStatusCode.InternalServerError,
+                    ResultStatus.ValidationError => (int)HttpStatusCode.UnprocessableEntity,
+                    ResultStatus.NotFound => (int)HttpStatusCode.NotFound,
                     _ => throw new ArgumentOutOfRangeException(nameof(result.Status), $"Unexpected result status value: {result.Status}")
                 };
 
