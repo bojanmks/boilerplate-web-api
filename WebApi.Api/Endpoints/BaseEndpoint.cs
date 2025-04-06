@@ -25,6 +25,7 @@ namespace WebApi.Api.Endpoints
             {
                 Data = result.Data,
                 ErrorMessages = result.Errors ?? Enumerable.Empty<string>(),
+                FieldErrors = result.FieldErrors ?? Enumerable.Empty<FieldErrors>(),
                 StatusCode = statusCode
             };
 

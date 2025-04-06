@@ -76,9 +76,15 @@ namespace WebApi.Implementation.UseCases
 
                 if (!validationResult.IsValid)
                 {
-                    var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var fieldErrors = validationResult.Errors
+                        .GroupBy(x => x.PropertyName)
+                        .Select(x => new FieldErrors
+                        {
+                            Field = x.Key,
+                            Errors = x.Select(g => g.ErrorMessage)
+                        });
 
-                    return Result<TOut>.ValidationError(errorMessages);
+                    return Result<TOut>.ValidationError(fieldErrors: fieldErrors);
                 }
             }
 

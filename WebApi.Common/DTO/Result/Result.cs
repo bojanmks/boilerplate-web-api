@@ -5,7 +5,8 @@ namespace WebApi.Common.DTO.Result
     public class Result<T>
     {
         public T Data { get; set; }
-        public IEnumerable<string>? Errors { get; set; }
+        public IEnumerable<string>? Errors { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<FieldErrors>? FieldErrors { get; set; } = Enumerable.Empty<FieldErrors>();
         public ResultStatus Status { get; set; }
         public int? HttpStatusCode { get; set; }
 
@@ -29,11 +30,12 @@ namespace WebApi.Common.DTO.Result
             };
         }
 
-        public static Result<T> ValidationError(IEnumerable<string> errors)
+        public static Result<T> ValidationError(IEnumerable<string>? errors = null, IEnumerable<FieldErrors>? fieldErrors = null)
         {
             return new Result<T>
             {
-                Errors = errors,
+                Errors = errors ?? Enumerable.Empty<string>(),
+                FieldErrors = fieldErrors ?? Enumerable.Empty<FieldErrors>(),
                 Status = ResultStatus.ValidationError
             };
         }
