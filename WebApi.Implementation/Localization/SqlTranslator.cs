@@ -34,13 +34,13 @@ namespace WebApi.Implementation.Localization
             return key;
         }
 
+        private string CacheKey => $"LocalizationCache_{_user.Locale}";
+
         private Dictionary<string, string> LoadLocalizationData()
         {
-            string cacheKey = MakeCacheKey();
-
             Dictionary<string, string> localizationData;
 
-            if (_memoryCache.TryGetValue(cacheKey, out localizationData))
+            if (_memoryCache.TryGetValue(CacheKey, out localizationData))
             {
                 return localizationData;
             }
@@ -64,14 +64,9 @@ namespace WebApi.Implementation.Localization
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromHours(12));
 
-            _memoryCache.Set(cacheKey, localizationData, cacheEntryOptions);
+            _memoryCache.Set(CacheKey, localizationData, cacheEntryOptions);
 
             return localizationData;
-        }
-
-        private string MakeCacheKey()
-        {
-            return $"LocalizationCache_{_user.Locale}";
         }
     }
 }

@@ -3,7 +3,7 @@ using WebApi.DataAccess.Entities.Abstraction;
 
 namespace WebApi.Application.Search
 {
-    public class EfBaseSearch<TEntity> : BaseSearch where TEntity : Entity
+    public class EfSearch<TEntity> : BaseSearch where TEntity : Entity
     {
         #region Sorting
         private Dictionary<string, Expression<Func<TEntity, object>>> _sortByPropertiesMap = new();

@@ -3,7 +3,7 @@ using WebApi.DataAccess.Entities;
 
 namespace WebApi.Implementation.Search.SearchObjects
 {
-    public class UserSearch : EfBaseSearch<User>
+    public class UserSearch : EfSearch<User>
     {
         public UserSearch()
         {

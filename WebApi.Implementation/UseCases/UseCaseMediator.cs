@@ -9,6 +9,7 @@ using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
 using WebApi.Implementation.Exceptions;
+using WebApi.Implementation.Search;
 using WebApi.Implementation.UseCaseHandlers.Generic;
 
 namespace WebApi.Implementation.UseCases
@@ -22,16 +23,20 @@ namespace WebApi.Implementation.UseCases
         private readonly IUseCaseSubscriberResolver _subscriberResolver;
         private readonly IValidatorResolver _validatorResolver;
         private readonly IUseCaseHandlerResolver _useCaseHandlerResolver;
-        private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
+        private readonly EfSearchObjectQueryBuilder _searchObjectQueryBuilder;
+        private readonly EfSearchExecutor _searchExecutor;
 
-        public UseCaseMediator(EntityAccessor accessor,
-                               IMapper mapper,
-                               IApplicationUser applicationUser,
-                               IUseCaseLogger useCaseLogger,
-                               IUseCaseSubscriberResolver subscriberResolver,
-                               IValidatorResolver validatorResolver,
-                               IUseCaseHandlerResolver useCaseHandlerResolver,
-                               ISearchObjectQueryBuilder searchObjectQueryBuilder)
+        public UseCaseMediator(
+            EntityAccessor accessor,
+            IMapper mapper,
+            IApplicationUser applicationUser,
+            IUseCaseLogger useCaseLogger,
+            IUseCaseSubscriberResolver subscriberResolver,
+            IValidatorResolver validatorResolver,
+            IUseCaseHandlerResolver useCaseHandlerResolver,
+            EfSearchObjectQueryBuilder searchObjectQueryBuilder,
+            EfSearchExecutor searchExecutor
+        )
         {
             _accessor = accessor;
             _mapper = mapper;
@@ -41,6 +46,7 @@ namespace WebApi.Implementation.UseCases
             _validatorResolver = validatorResolver;
             _useCaseHandlerResolver = useCaseHandlerResolver;
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
+            _searchExecutor = searchExecutor;
         }
 
         public Task<Result<object>> Search<TUseCase, TEntity, TOut>(TUseCase useCase)
@@ -48,7 +54,7 @@ namespace WebApi.Implementation.UseCases
             where TOut : IIdentifyable
             where TEntity : Entity
         {
-            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_accessor, _searchObjectQueryBuilder);
+            var handler = new EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut>(_accessor, _searchObjectQueryBuilder, _searchExecutor);
             var executor = ConstructExecutor<TUseCase, ISearchObject, object>();
 
             return executor.Execute(useCase, handler);

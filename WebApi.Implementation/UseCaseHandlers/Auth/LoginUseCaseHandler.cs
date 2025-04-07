@@ -31,7 +31,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Auth
 
             if (user is null || !user.IsPasswordCorrect(useCase.Data.Password))
             {
-                return Result<Tokens>.ValidationError(new[] { _translator.Translate("invalidCredentials") });
+                return Result<Tokens>.ValidationError([_translator.Translate("invalidCredentials")]);
             }
 
             var tokens = await _jwtTokenStorage.CreateRecordAsync(user);

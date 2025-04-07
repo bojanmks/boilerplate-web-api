@@ -7,7 +7,7 @@ using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    internal class EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity> : EfUseCaseHandler<TUseCase, TData, Empty>
+    public class EfGenericInsertUseCaseHandler<TUseCase, TData, TEntity> : EfUseCaseHandler<TUseCase, TData, Empty>
         where TUseCase : UseCase<TData, Empty>
         where TEntity : Entity
     {

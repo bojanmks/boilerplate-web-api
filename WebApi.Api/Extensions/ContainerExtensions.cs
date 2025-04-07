@@ -13,7 +13,6 @@ using WebApi.Application.AppSettings;
 using WebApi.Application.Jwt;
 using WebApi.Application.Localization;
 using WebApi.Application.Logging;
-using WebApi.Application.Search;
 using WebApi.Application.UseCases;
 using WebApi.Application.Validation;
 using WebApi.Common.Enums.Auth;
@@ -102,7 +101,8 @@ namespace WebApi.Api.Extensions
             services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
             services.AddTransient<IJwtTokenStorage, EfJwtTokenStorage>();
-            services.AddTransient<ISearchObjectQueryBuilder, EfSearchObjectQueryBuilder>();
+            services.AddTransient<EfSearchObjectQueryBuilder>();
+            services.AddTransient<EfSearchExecutor>();
         }
 
         private static void AddDbContext(this IServiceCollection services, AppSettings appSettings)

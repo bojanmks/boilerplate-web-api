@@ -4,6 +4,7 @@ using WebApi.Common;
 using WebApi.Common.DTO.Result;
 using WebApi.DataAccess.Entities.Abstraction;
 using WebApi.Implementation.Core;
+using WebApi.Implementation.Search;
 using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
@@ -13,11 +14,17 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
         where TOut : IIdentifyable
         where TEntity : Entity
     {
-        private readonly ISearchObjectQueryBuilder _searchObjectQueryBuilder;
+        private readonly EfSearchObjectQueryBuilder _searchObjectQueryBuilder;
+        private readonly EfSearchExecutor _searchExecutor;
 
-        public EfGenericSearchUseCaseHandler(EntityAccessor accessor, ISearchObjectQueryBuilder searchObjectQueryBuilder) : base(accessor)
+        public EfGenericSearchUseCaseHandler(
+            EntityAccessor accessor,
+            EfSearchObjectQueryBuilder searchObjectQueryBuilder,
+            EfSearchExecutor searchExecutor
+        ) : base(accessor)
         {
             _searchObjectQueryBuilder = searchObjectQueryBuilder;
+            _searchExecutor = searchExecutor;
         }
 
         public override async Task<Result<object>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
@@ -26,7 +33,19 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
             var searchObj = useCase.Data;
 
-            var result = await _searchObjectQueryBuilder.BuildAndExecuteDynamicQueryAsync<TEntity, TOut>(searchObj, query);
+            if (searchObj is EfSearch<TEntity> efSearch)
+            {
+                var queryBuilderResult = _searchObjectQueryBuilder.BuildQuery<TEntity, TOut>(efSearch, query);
+
+                if (!queryBuilderResult.IsSuccess)
+                {
+                    return Result<object>.Error(queryBuilderResult.Errors);
+                }
+
+                query = queryBuilderResult.Data;
+            }
+
+            var result = await _searchExecutor.ExecuteSearchAsync<TEntity, TOut>(searchObj, query);
 
             return result;
         }
