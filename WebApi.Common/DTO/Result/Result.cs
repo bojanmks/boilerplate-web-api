@@ -4,7 +4,7 @@ namespace WebApi.Common.DTO.Result
 {
     public class Result<T>
     {
-        private Result() {}
+        private Result() { }
 
         public T? Data { get; private set; }
         public IEnumerable<string>? Errors { get; private set; } = Enumerable.Empty<string>();
