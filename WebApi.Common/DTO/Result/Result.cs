@@ -4,15 +4,17 @@ namespace WebApi.Common.DTO.Result
 {
     public class Result<T>
     {
-        public T Data { get; set; }
-        public IEnumerable<string>? Errors { get; set; } = Enumerable.Empty<string>();
-        public IEnumerable<FieldErrors>? FieldErrors { get; set; } = Enumerable.Empty<FieldErrors>();
-        public ResultStatus Status { get; set; }
-        public int? HttpStatusCode { get; set; }
+        private Result() {}
+
+        public T? Data { get; private set; }
+        public IEnumerable<string>? Errors { get; private set; } = Enumerable.Empty<string>();
+        public IEnumerable<FieldErrors>? FieldErrors { get; private set; } = Enumerable.Empty<FieldErrors>();
+        public ResultStatus Status { get; private set; }
+        public int? HttpStatusCode { get; private set; }
 
         public bool IsSuccess => Status == ResultStatus.Success;
 
-        public static Result<T> Success(T data)
+        public static Result<T> Success(T? data = default(T))
         {
             return new Result<T>
             {
@@ -21,11 +23,11 @@ namespace WebApi.Common.DTO.Result
             };
         }
 
-        public static Result<T> Error(IEnumerable<string> errors)
+        public static Result<T> Error(IEnumerable<string>? errors = null)
         {
             return new Result<T>
             {
-                Errors = errors,
+                Errors = errors ?? Enumerable.Empty<string>(),
                 Status = ResultStatus.Error
             };
         }
@@ -46,6 +48,23 @@ namespace WebApi.Common.DTO.Result
             {
                 Errors = errors ?? Enumerable.Empty<string>(),
                 Status = ResultStatus.NotFound
+            };
+        }
+
+        public Result<T> WithHttpStatusCode(int? httpStatusCode)
+        {
+            HttpStatusCode = httpStatusCode;
+            return this;
+        }
+
+        public Result<TOut> AsResultOfType<TOut>()
+        {
+            return new Result<TOut>
+            {
+                Errors = Errors,
+                FieldErrors = FieldErrors,
+                Status = Status,
+                HttpStatusCode = HttpStatusCode
             };
         }
     }

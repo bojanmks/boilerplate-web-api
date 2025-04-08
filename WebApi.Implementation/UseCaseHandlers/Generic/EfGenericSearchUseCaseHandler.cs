@@ -39,7 +39,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
                 if (!queryBuilderResult.IsSuccess)
                 {
-                    return Result<object>.Error(queryBuilderResult.Errors);
+                    return queryBuilderResult.AsResultOfType<object>();
                 }
 
                 query = queryBuilderResult.Data;

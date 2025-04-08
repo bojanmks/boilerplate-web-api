@@ -62,8 +62,8 @@ namespace WebApi.Implementation.UseCases
 
             if (!isAuthorized)
             {
-                var errorResult = Result<TOut>.Error(Enumerable.Empty<string>());
-                errorResult.HttpStatusCode = (int)HttpStatusCode.Forbidden;
+                var errorResult = Result<TOut>.Error()
+                    .WithHttpStatusCode((int)HttpStatusCode.Forbidden);
 
                 return errorResult;
             }
@@ -88,7 +88,7 @@ namespace WebApi.Implementation.UseCases
                 }
             }
 
-            return Result<TOut>.Success(default(TOut));
+            return Result<TOut>.Success();
         }
 
         private async Task ExecuteUseCaseSubscribers(TUseCase useCase, TOut useCaseResponse)
