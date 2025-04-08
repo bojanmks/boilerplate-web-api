@@ -68,10 +68,10 @@ namespace WebApi.Api.Extensions
                             Scheme = "oauth2",
                             Name = "Bearer",
                             In = ParameterLocation.Header
-                            },
-                            new List<string>()
-                        }
-                    });
+                        },
+                        new List<string>()
+                    }
+                });
             });
         }
 
@@ -257,9 +257,11 @@ namespace WebApi.Api.Extensions
 
         private static void AddUserRoleUseCaseMapStore(this IServiceCollection services)
         {
+            var allRoles = Enum.GetValues<UserRole>();
+
             var useCasesMap = new Dictionary<UserRole, List<string>>();
 
-            foreach (var role in Enum.GetValues<UserRole>())
+            foreach (var role in allRoles)
             {
                 useCasesMap.Add(role, new List<string>());
             }
@@ -270,10 +272,7 @@ namespace WebApi.Api.Extensions
             {
                 var allowForRolesAttribute = useCaseType.GetAttributeOfType<AllowForRolesAttribute>();
 
-                if (allowForRolesAttribute is null)
-                {
-                    continue;
-                }
+                var allowedRoles = allowForRolesAttribute is null ? allRoles : allowForRolesAttribute.Roles;
 
                 var constructorParameters = useCaseType.GetConstructors().OrderBy(x => x.GetParameters().Count()).FirstOrDefault()?.GetParameters();
                 var constructorParametersDefaultValues = constructorParameters?.Select(x => x.GetType().GetDefault()).ToArray();
@@ -285,7 +284,7 @@ namespace WebApi.Api.Extensions
                     continue;
                 }
 
-                foreach (var allowedRole in allowForRolesAttribute.Roles)
+                foreach (var allowedRole in allowedRoles)
                 {
                     useCasesMap[allowedRole].Add(useCaseInstance.Id);
                 }
