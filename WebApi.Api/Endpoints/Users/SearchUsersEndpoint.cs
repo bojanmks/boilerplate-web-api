@@ -1,4 +1,5 @@
-﻿using WebApi.Application.UseCases.Users;
+﻿using WebApi.Application.Search;
+using WebApi.Application.UseCases.Users;
 using WebApi.Common.DTO.Users;
 using WebApi.DataAccess.Entities;
 using WebApi.Implementation.Search.SearchObjects;
@@ -8,7 +9,7 @@ namespace WebApi.Api.Endpoints.Users;
 
 public class SearchUsersEndpoint(
     UseCaseMediator _mediator
-) : BaseEndpoint<UserSearch, object>
+) : BaseEndpoint<UserSearch, SearchResult<UserDto>>
 {
     public override void Configure()
     {

@@ -9,8 +9,8 @@ using WebApi.Implementation.UseCaseHandlers.Abstraction;
 
 namespace WebApi.Implementation.UseCaseHandlers.Generic
 {
-    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : EfUseCaseHandler<TUseCase, ISearchObject, object>
-        where TUseCase : UseCase<ISearchObject, object>
+    public class EfGenericSearchUseCaseHandler<TUseCase, TEntity, TOut> : EfUseCaseHandler<TUseCase, ISearchObject, SearchResult<TOut>>
+        where TUseCase : UseCase<ISearchObject, SearchResult<TOut>>
         where TOut : IIdentifyable
         where TEntity : Entity
     {
@@ -27,7 +27,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
             _searchExecutor = searchExecutor;
         }
 
-        public override async Task<Result<object>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
+        public override async Task<Result<SearchResult<TOut>>> HandleAsync(TUseCase useCase, CancellationToken cancellationToken = default)
         {
             var query = _accessor.GetQuery<TEntity>();
 
@@ -39,7 +39,7 @@ namespace WebApi.Implementation.UseCaseHandlers.Generic
 
                 if (!queryBuilderResult.IsSuccess)
                 {
-                    return queryBuilderResult.AsResultOfType<object>();
+                    return queryBuilderResult.AsResultOfType<SearchResult<TOut>>();
                 }
 
                 query = queryBuilderResult.Data;
